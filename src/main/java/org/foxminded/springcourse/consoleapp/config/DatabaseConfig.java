@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.config;
 
-import org.foxminded.springcourse.consoleapp.dao.ConnectionConfig;
+import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

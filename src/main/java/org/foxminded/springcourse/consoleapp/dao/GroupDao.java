@@ -1,9 +1,8 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.exception.DaoException;
+import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.foxminded.springcourse.consoleapp.model.Group;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;

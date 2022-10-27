@@ -1,14 +1,19 @@
 package org.foxminded.springcourse.consoleapp.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
+@Setter
 public class Group {
 
-    private final int id;
-    private final String name;
+    private int id;
+    private String name;
+
+    public Group() {
+    }
 
     public Group(int id, String name) {
         this.id = id;
