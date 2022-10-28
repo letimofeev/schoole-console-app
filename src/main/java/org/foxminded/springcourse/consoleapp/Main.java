@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp;
 
-import org.foxminded.springcourse.consoleapp.config.DatabaseConfig;
+import org.foxminded.springcourse.consoleapp.config.ApplicationConfig;
 import org.foxminded.springcourse.consoleapp.dao.GroupDao;
 import org.foxminded.springcourse.consoleapp.dao.StudentDao;
 import org.foxminded.springcourse.consoleapp.model.Group;
@@ -13,7 +13,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DatabaseConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
         GroupDao groupDao = context.getBean(GroupDao.class);
         StudentDao studentDao = context.getBean(StudentDao.class);
 
@@ -21,8 +21,8 @@ public class Main {
         System.out.println(groups);
 
         Student student = new Student();
-        student.setFirstName("Bob");
-        student.setLastName("Martin");
+        student.setFirstName("Bob2");
+        student.setLastName("Martin2");
         student.setGroupId(1);
         studentDao.save(student);
         System.out.println(student);

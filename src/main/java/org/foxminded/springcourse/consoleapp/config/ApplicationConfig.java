@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan("org.foxminded.springcourse.consoleapp")
-public class DatabaseConfig {
+public class ApplicationConfig {
 
     @Bean
     public ConnectionConfig connectionConfig() {

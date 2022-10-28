@@ -8,38 +8,41 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 
 @Repository
-public class StudentDao {
-
-    private final ConnectionConfig connectionConfig;
+public class StudentDao extends AbstractDao<Student, Integer> {
 
     public StudentDao(ConnectionConfig connectionConfig) {
-        this.connectionConfig = connectionConfig;
+        super(connectionConfig);
     }
 
     public void save(Student student) {
-        try (Connection connection = createConnection()) {
-            String sql = "INSERT INTO students (group_id, first_name, last_name) " +
-                    "VALUES (?, ?, ?) " +
-                    "RETURNING student_id;";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, student.getGroupId());
-                statement.setString(2, student.getFirstName());
-                statement.setString(3, student.getLastName());
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    student.setId(id);
-                }
+        String sql = "INSERT INTO students (group_id, first_name, last_name) " +
+                "VALUES (?, ?, ?) " +
+                "RETURNING student_id;";
+        genericExecuteQuery(sql, statement -> bindStudent(statement, student),
+                resultSet -> parseStudentId(resultSet, student));
+
+    }
+
+    private Void bindStudent(PreparedStatement statement, Student student) {
+        try {
+            statement.setInt(1, student.getGroupId());
+            statement.setString(2, student.getFirstName());
+            statement.setString(3, student.getLastName());
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+        return null;
+    }
+
+    private Void parseStudentId(ResultSet resultSet, Student student) {
+        try {
+            if (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                student.setId(id);
             }
         } catch (SQLException e) {
             throw new DaoException(e);
         }
-    }
-
-    private Connection createConnection() throws SQLException {
-        String url = connectionConfig.getUrl();
-        String user = connectionConfig.getUser();
-        String password = connectionConfig.getPassword();
-        return DriverManager.getConnection(url, user, password);
+        return null;
     }
 }
