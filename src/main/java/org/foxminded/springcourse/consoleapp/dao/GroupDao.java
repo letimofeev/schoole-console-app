@@ -3,6 +3,7 @@ package org.foxminded.springcourse.consoleapp.dao;
 import org.foxminded.springcourse.consoleapp.exception.DaoException;
 import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.foxminded.springcourse.consoleapp.model.Group;
+import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;

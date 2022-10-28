@@ -1,8 +1,9 @@
-package org.foxminded.springcourse.consoleapp.dao;
+package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.annotation.Table;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;

@@ -1,5 +1,7 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

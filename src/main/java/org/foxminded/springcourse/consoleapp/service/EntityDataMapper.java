@@ -1,8 +1,9 @@
-package org.foxminded.springcourse.consoleapp.dao;
+package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
-import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;

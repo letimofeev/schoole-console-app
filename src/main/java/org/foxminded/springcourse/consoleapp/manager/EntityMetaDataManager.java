@@ -1,5 +1,8 @@
-package org.foxminded.springcourse.consoleapp.dao;
+package org.foxminded.springcourse.consoleapp.manager;
 
+import org.foxminded.springcourse.consoleapp.service.EntityMetaDataExtractor;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
+import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
 import org.springframework.stereotype.Component;
 
 @Component
