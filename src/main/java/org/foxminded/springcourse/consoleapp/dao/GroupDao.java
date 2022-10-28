@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class GroupDao extends AbstractDao<Group, Integer> {
+public class GroupDao extends AbstractCrudDao<Group, Integer> {
 
     private static final String GROUP_ID_COLUMN = "group_id";
     private static final String GROUP_NAME_COLUMN = "group_name";
 
-    public GroupDao(ConnectionConfig connectionConfig) {
-        super(connectionConfig);
+    public GroupDao(ConnectionConfig connectionConfig, CrudQueryBuilder<Group> queryBuilder,
+                    EntityDataMapper<Group> dataBinder) {
+        super(connectionConfig, queryBuilder, dataBinder);
     }
 
     public List<Group> findAllWithStudentCountLessThanEqual(int studentCount) {
