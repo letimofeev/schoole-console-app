@@ -22,7 +22,7 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
         return String.format(queryTemplate,
                 entityMetaData.getTable(),
                 getUpdatableColumns(entityMetaData),
-                getBindParameters(entityMetaData),
+                getBindParametersForInsert(entityMetaData),
                 entityMetaData.getIdColumn());
     }
 
@@ -36,6 +36,16 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
                 entityMetaData.getIdColumn());
     }
 
+    @Override
+    public String buildUpdateQuery(T entity) {
+        String queryTemplate = "UPDATE %s SET %s WHERE %s = ?";
+        EntityMetaData entityMetaData = metaDataManager.getMetaData(entity.getClass());
+        return String.format(queryTemplate,
+                entityMetaData.getTable(),
+                getBindParametersForUpdate(entityMetaData),
+                entityMetaData.getIdColumn());
+    }
+
     private String getUpdatableColumns(EntityMetaData entityMetaData) {
         return String.join(", ", entityMetaData.getUpdatableColumns());
     }
@@ -44,9 +54,15 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
         return String.join(", ", entityMetaData.getColumns());
     }
 
-    private String getBindParameters(EntityMetaData entityMetaData) {
+    private String getBindParametersForInsert(EntityMetaData entityMetaData) {
         return entityMetaData.getUpdatableColumns().stream()
                 .map(column -> "?")
+                .collect(Collectors.joining(", "));
+    }
+
+    private String getBindParametersForUpdate(EntityMetaData entityMetaData) {
+        return entityMetaData.getUpdatableColumns().stream()
+                .map(column -> column + " = ?")
                 .collect(Collectors.joining(", "));
     }
 }

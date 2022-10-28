@@ -11,10 +11,10 @@ public abstract class AbstractCrudDao<T, ID> {
 
     protected final ConnectionConfig connectionConfig;
     protected final CrudQueryBuilder<T, ID> queryBuilder;
-    protected final EntityDataMapper<T, ID> dataMapper;
+    protected final EntityDataMapper<T> dataMapper;
 
     public AbstractCrudDao(ConnectionConfig connectionConfig, CrudQueryBuilder<T, ID> queryBuilder,
-                           EntityDataMapper<T, ID> dataMapper) {
+                           EntityDataMapper<T> dataMapper) {
         this.connectionConfig = connectionConfig;
         this.queryBuilder = queryBuilder;
         this.dataMapper = dataMapper;
@@ -24,10 +24,10 @@ public abstract class AbstractCrudDao<T, ID> {
         try {
             String query = queryBuilder.buildSaveQuery(entity);
             genericExecuteQuery(query, statement -> {
-                dataMapper.bindAllColumns(statement, entity);
+                dataMapper.bindUpdatableColumns(statement, entity);
                 return null;
             }, resultSet -> {
-                dataMapper.takeNextAndBindEntity(entity, resultSet);
+                dataMapper.getNextAndBindEntity(entity, resultSet);
                 return null;
             });
         } catch (Exception e) {
@@ -40,13 +40,27 @@ public abstract class AbstractCrudDao<T, ID> {
             String query = queryBuilder.buildFindByIdQuery(id, entityClass);
             T entity = entityClass.getConstructor().newInstance();
             genericExecuteQuery(query, statement -> {
-                dataMapper.bindIdColumn(statement, id);
+                dataMapper.bindValue(statement, id);
                 return null;
             }, resultSet -> {
-                dataMapper.takeNextAndBindEntity(entity, resultSet);
+                dataMapper.getNextAndBindEntity(entity, resultSet);
                 return null;
             });
             return entity;
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public void update(T entity) {
+        try {
+            String query = queryBuilder.buildUpdateQuery(entity);
+            genericExecuteUpdateQuery(query, statement -> {
+                int bindValuesNumber = dataMapper.bindUpdatableColumns(statement, entity);
+                int lastBindIndex = bindValuesNumber + 1;
+                dataMapper.bindIdValue(statement, entity, lastBindIndex);
+                return null;
+            });
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -60,6 +74,18 @@ public abstract class AbstractCrudDao<T, ID> {
                 prepareStatement.apply(statement);
                 ResultSet resultSet = statement.executeQuery();
                 return parseResultSet.apply(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    protected void genericExecuteUpdateQuery(String query,
+                                             Function<PreparedStatement, Void> prepareStatement) {
+        try (Connection connection = createConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                prepareStatement.apply(statement);
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new DaoException(e);

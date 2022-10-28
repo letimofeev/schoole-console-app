@@ -10,7 +10,7 @@ public class StudentDao extends AbstractCrudDao<Student, Integer> {
 
     public StudentDao(ConnectionConfig connectionConfig,
                       CrudQueryBuilder<Student, Integer> queryBuilder,
-                      EntityDataMapper<Student, Integer> dataBinder) {
+                      EntityDataMapper<Student> dataBinder) {
         super(connectionConfig, queryBuilder, dataBinder);
     }
 }

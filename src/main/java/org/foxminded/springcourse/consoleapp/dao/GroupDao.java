@@ -18,7 +18,7 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
 
     public GroupDao(ConnectionConfig connectionConfig,
                     CrudQueryBuilder<Group, Integer> queryBuilder,
-                    EntityDataMapper<Group, Integer> dataBinder) {
+                    EntityDataMapper<Group> dataBinder) {
         super(connectionConfig, queryBuilder, dataBinder);
     }
 
