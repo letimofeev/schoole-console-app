@@ -4,7 +4,9 @@ import org.foxminded.springcourse.consoleapp.exception.DaoException;
 import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class AbstractCrudDao<T, ID> {
@@ -35,7 +37,7 @@ public abstract class AbstractCrudDao<T, ID> {
         }
     }
 
-    public T findById(ID id, Class<T> entityClass) {
+    public Optional<T> findById(ID id, Class<T> entityClass) {
         try {
             String query = queryBuilder.buildFindByIdQuery(id, entityClass);
             T entity = entityClass.getConstructor().newInstance();
@@ -46,7 +48,10 @@ public abstract class AbstractCrudDao<T, ID> {
                 dataMapper.getNextAndBindEntity(entity, resultSet);
                 return null;
             });
-            return entity;
+            if (isEntityEmpty(entity, entityClass)) {
+                return Optional.empty();
+            }
+            return Optional.of(entity);
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -59,6 +64,18 @@ public abstract class AbstractCrudDao<T, ID> {
                 int bindValuesNumber = dataMapper.bindUpdatableColumns(statement, entity);
                 int lastBindIndex = bindValuesNumber + 1;
                 dataMapper.bindIdValue(statement, entity, lastBindIndex);
+                return null;
+            });
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public void deleteById(ID id, Class<T> entityClass) {
+        try {
+            String query = queryBuilder.buildDeleteByIdQuery(id, entityClass);
+            genericExecuteUpdateQuery(query, statement -> {
+                dataMapper.bindValue(statement, id);
                 return null;
             });
         } catch (Exception e) {
@@ -97,5 +114,11 @@ public abstract class AbstractCrudDao<T, ID> {
         String user = connectionConfig.getUser();
         String password = connectionConfig.getPassword();
         return DriverManager.getConnection(url, user, password);
+    }
+
+    private boolean isEntityEmpty(T entity, Class<T> entityClass) throws NoSuchMethodException,
+            InvocationTargetException, InstantiationException, IllegalAccessException {
+        T empty = entityClass.getConstructor().newInstance();
+        return empty.equals(entity);
     }
 }

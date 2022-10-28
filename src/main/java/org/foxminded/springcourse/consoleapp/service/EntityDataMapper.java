@@ -56,7 +56,7 @@ public class EntityDataMapper<T> {
     }
 
     public void bindIdValue(PreparedStatement statement, T entity, int bindParameterIndex) {
-        Object id = getId(entity);
+        Object id = getEntityId(entity);
         bindValue(statement, id, bindParameterIndex);
     }
 
@@ -115,7 +115,7 @@ public class EntityDataMapper<T> {
         return columns;
     }
 
-    private Object getId(T entity) {
+    private Object getEntityId(T entity) {
         for (Field field : entity.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) {
                 field.setAccessible(true);

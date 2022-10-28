@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
@@ -18,22 +19,10 @@ public class Main {
         StudentDao studentDao = context.getBean(StudentDao.class);
 
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(2);
-        // System.out.println(groups);
 
-//        Student student = new Student();
-//        student.setFirstName("Bob2");
-//        student.setLastName("Martin2");
-//        student.setGroupId(3);
-//        // studentDao.save(student);
-//        System.out.println(student);
-//
-//        Group group = new Group();
-//        group.setName("group6");
-//        groupDao.save(group);
-//        System.out.println(group);
-        studentDao.update(new Student(1, 3, "Roberty", "Martin"));
+        studentDao.deleteById(1, Student.class);
 
-        System.out.println(studentDao.findById(1, Student.class));
-        System.out.println(groupDao.findById(4, Group.class));
+        Optional<Student> studentOptional = studentDao.findById(1, Student.class);
+        studentOptional.ifPresent(System.out::println);
     }
 }

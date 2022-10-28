@@ -46,6 +46,15 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
                 entityMetaData.getIdColumn());
     }
 
+    @Override
+    public String buildDeleteByIdQuery(ID id, Class<T> entityClass) {
+        String queryTemplate = "DELETE FROM %s WHERE %s = ?";
+        EntityMetaData entityMetaData = metaDataManager.getMetaData(entityClass);
+        return String.format(queryTemplate,
+                entityMetaData.getTable(),
+                entityMetaData.getIdColumn());
+    }
+
     private String getUpdatableColumns(EntityMetaData entityMetaData) {
         return String.join(", ", entityMetaData.getUpdatableColumns());
     }
