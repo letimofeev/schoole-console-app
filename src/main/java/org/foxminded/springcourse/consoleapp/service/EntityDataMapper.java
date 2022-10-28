@@ -2,8 +2,8 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
+import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
-import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -18,14 +18,14 @@ import java.util.Set;
 @Component
 public class EntityDataMapper<T, ID> {
 
-    private final EntityMetaDataCache entityMetaDataCache;
+    private final EntityMetaDataManager metaDataManager;
 
-    public EntityDataMapper(EntityMetaDataCache entityMetaDataCache) {
-        this.entityMetaDataCache = entityMetaDataCache;
+    public EntityDataMapper(EntityMetaDataManager metaDataManager) {
+        this.metaDataManager = metaDataManager;
     }
 
     public void bindAllColumns(PreparedStatement statement, T entity) {
-        EntityMetaData entityMetaData = entityMetaDataCache.get(entity.getClass());
+        EntityMetaData entityMetaData = metaDataManager.getMetaData(entity.getClass());
         List<String> updatableColumns = entityMetaData.getUpdatableColumns();
         for (int i = 1; i <= updatableColumns.size(); i++) {
             String column = updatableColumns.get(i - 1);
