@@ -19,6 +19,7 @@ public class Main {
         StudentDao studentDao = context.getBean(StudentDao.class);
 
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(2);
+        System.out.println(groups);
 
         studentDao.deleteById(1, Student.class);
 

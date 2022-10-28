@@ -5,7 +5,7 @@ import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
 import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Component
+@Service
 public class EntityDataMapper<T> {
 
     private final EntityMetaDataManager metaDataManager;

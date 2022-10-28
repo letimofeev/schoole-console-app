@@ -4,13 +4,13 @@ import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.annotation.Table;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class EntityMetaDataExtractor {
 
     public EntityMetaData getMetaData(Class<?> entityClass) {
