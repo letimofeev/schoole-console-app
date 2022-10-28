@@ -1,6 +1,7 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
+import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
 import org.springframework.stereotype.Component;
 
@@ -14,17 +15,17 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class EntityDataMapper<T> {
+public class EntityDataMapper<T, ID> {
 
-    private final EntityInformationCache entityInformationCache;
+    private final EntityMetaDataCache entityMetaDataCache;
 
-    public EntityDataMapper(EntityInformationCache entityInformationCache) {
-        this.entityInformationCache = entityInformationCache;
+    public EntityDataMapper(EntityMetaDataCache entityMetaDataCache) {
+        this.entityMetaDataCache = entityMetaDataCache;
     }
 
-    public void bindStatement(PreparedStatement statement, T entity) {
-        EntityInformation entityInformation = entityInformationCache.get(entity.getClass());
-        List<String> updatableColumns = entityInformation.getUpdatableColumns();
+    public void bindAllColumns(PreparedStatement statement, T entity) {
+        EntityMetaData entityMetaData = entityMetaDataCache.get(entity.getClass());
+        List<String> updatableColumns = entityMetaData.getUpdatableColumns();
         for (int i = 1; i <= updatableColumns.size(); i++) {
             String column = updatableColumns.get(i - 1);
             for (Field field : entity.getClass().getDeclaredFields()) {
@@ -42,6 +43,29 @@ public class EntityDataMapper<T> {
                     }
                 }
             }
+        }
+    }
+
+    public void bindIdColumn(PreparedStatement statement, ID id) {
+        bindIdColumn(statement, id, 1);
+    }
+
+    public void bindIdColumn(PreparedStatement statement, ID id, int bindParameterIndex) {
+        try {
+            statement.setObject(bindParameterIndex, id);
+        } catch (SQLException e) {
+            throw new EntityDataMapperException(e);
+        }
+
+    }
+
+    public void takeNextAndBindEntity(T entity, ResultSet resultSet) {
+        try {
+            if (resultSet.next()) {
+                bindEntity(entity, resultSet);
+            }
+        } catch (SQLException e) {
+            throw new EntityDataMapperException(e);
         }
     }
 

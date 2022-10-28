@@ -9,31 +9,46 @@ import java.util.function.Function;
 public abstract class AbstractCrudDao<T, ID> {
 
     protected final ConnectionConfig connectionConfig;
-    protected final CrudQueryBuilder<T> queryBuilder;
-    protected final EntityDataMapper<T> dataMapper;
+    protected final CrudQueryBuilder<T, ID> queryBuilder;
+    protected final EntityDataMapper<T, ID> dataMapper;
 
-    public AbstractCrudDao(ConnectionConfig connectionConfig, CrudQueryBuilder<T> queryBuilder,
-                           EntityDataMapper<T> dataMapper) {
+    public AbstractCrudDao(ConnectionConfig connectionConfig, CrudQueryBuilder<T, ID> queryBuilder,
+                           EntityDataMapper<T, ID> dataMapper) {
         this.connectionConfig = connectionConfig;
         this.queryBuilder = queryBuilder;
         this.dataMapper = dataMapper;
     }
 
     public void save(T entity) {
-        String query = queryBuilder.buildSaveQuery(entity);
-        genericExecuteQuery(query, statement -> {
-            dataMapper.bindStatement(statement, entity);
-            return null;
-        }, resultSet -> {
-            try {
-                if (resultSet.next()) {
-                    dataMapper.bindEntity(entity, resultSet);
-                }
-            } catch (Exception e) {
-                throw new DaoException(e);
-            }
-            return null;
-        });
+        try {
+            String query = queryBuilder.buildSaveQuery(entity);
+            genericExecuteQuery(query, statement -> {
+                dataMapper.bindAllColumns(statement, entity);
+                return null;
+            }, resultSet -> {
+                dataMapper.takeNextAndBindEntity(entity, resultSet);
+                return null;
+            });
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public T findById(ID id, Class<T> entityClass) {
+        try {
+            String query = queryBuilder.buildFindByIdQuery(id, entityClass);
+            T entity = entityClass.getConstructor().newInstance();
+            genericExecuteQuery(query, statement -> {
+                dataMapper.bindIdColumn(statement, id);
+                return null;
+            }, resultSet -> {
+                dataMapper.takeNextAndBindEntity(entity, resultSet);
+                return null;
+            });
+            return entity;
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
     }
 
     protected <R> R genericExecuteQuery(String query,

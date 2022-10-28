@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class EntityInformationCache {
+public class EntityMetaDataCache {
 
-    private final Map<Class<?>, EntityInformation> cache = new ConcurrentHashMap<>();
+    private final Map<Class<?>, EntityMetaData> cache = new ConcurrentHashMap<>();
 
-    public void put(Class<?> entityClass, EntityInformation entityInformation) {
-        cache.put(entityClass, entityInformation);
+    public void put(Class<?> entityClass, EntityMetaData entityMetaData) {
+        cache.put(entityClass, entityMetaData);
     }
 
-    public EntityInformation get(Class<?> entityClass) {
+    public EntityMetaData get(Class<?> entityClass) {
         return cache.get(entityClass);
     }
 

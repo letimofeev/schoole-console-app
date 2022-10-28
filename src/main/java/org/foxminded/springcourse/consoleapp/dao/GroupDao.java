@@ -15,8 +15,9 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
     private static final String GROUP_ID_COLUMN = "group_id";
     private static final String GROUP_NAME_COLUMN = "group_name";
 
-    public GroupDao(ConnectionConfig connectionConfig, CrudQueryBuilder<Group> queryBuilder,
-                    EntityDataMapper<Group> dataBinder) {
+    public GroupDao(ConnectionConfig connectionConfig,
+                    CrudQueryBuilder<Group, Integer> queryBuilder,
+                    EntityDataMapper<Group, Integer> dataBinder) {
         super(connectionConfig, queryBuilder, dataBinder);
     }
 
