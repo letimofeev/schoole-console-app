@@ -5,6 +5,7 @@ import org.foxminded.springcourse.consoleapp.dao.GroupDao;
 import org.foxminded.springcourse.consoleapp.dao.StudentDao;
 import org.foxminded.springcourse.consoleapp.model.Group;
 import org.foxminded.springcourse.consoleapp.model.Student;
+import org.foxminded.springcourse.consoleapp.service.SqlScriptRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -16,14 +17,8 @@ public class Main {
         ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
         GroupDao groupDao = context.getBean(GroupDao.class);
         StudentDao studentDao = context.getBean(StudentDao.class);
+        SqlScriptRunner scriptRunner = context.getBean(SqlScriptRunner.class);
 
-        List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(2);
-        System.out.println(groups);
-
-        List<Student> studentsByCourseName = studentDao.findAllByCourseName("course4");
-        System.out.println(studentsByCourseName);
-
-        List<Group> allGroups = groupDao.findAll(Group.class);
-        System.out.println(allGroups);
+        scriptRunner.executeSqlScript("db-init/init.sql");
     }
 }
