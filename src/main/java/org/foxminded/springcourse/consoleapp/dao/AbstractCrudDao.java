@@ -7,6 +7,7 @@ import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractCrudDao<T, ID> {
@@ -25,13 +26,11 @@ public abstract class AbstractCrudDao<T, ID> {
     public void save(T entity) {
         try {
             String query = queryBuilder.buildSaveQuery(entity);
-            genericExecuteQuery(query, statement -> {
-                dataMapper.bindUpdatableColumns(statement, entity);
-                return null;
-            }, resultSet -> {
-                dataMapper.getNextAndFillEntity(entity, resultSet);
-                return null;
-            });
+            genericExecuteQuery(query, statement -> dataMapper.bindUpdatableColumns(statement, entity),
+                    resultSet -> {
+                        dataMapper.getNextAndFillEntity(entity, resultSet);
+                        return null;
+                    });
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -41,13 +40,11 @@ public abstract class AbstractCrudDao<T, ID> {
         try {
             String query = queryBuilder.buildFindByIdQuery(id, entityClass);
             T entity = entityClass.getConstructor().newInstance();
-            genericExecuteQuery(query, statement -> {
-                dataMapper.bindValues(statement, id);
-                return null;
-            }, resultSet -> {
-                dataMapper.getNextAndFillEntity(entity, resultSet);
-                return null;
-            });
+            genericExecuteQuery(query, statement -> dataMapper.bindValues(statement, id),
+                    resultSet -> {
+                        dataMapper.getNextAndFillEntity(entity, resultSet);
+                        return null;
+                    });
             if (isEntityEmpty(entity, entityClass)) {
                 return Optional.empty();
             }
@@ -64,7 +61,6 @@ public abstract class AbstractCrudDao<T, ID> {
                 int bindValuesNumber = dataMapper.bindUpdatableColumns(statement, entity);
                 int lastBindIndex = bindValuesNumber + 1;
                 dataMapper.bindIdValue(statement, entity, lastBindIndex);
-                return null;
             });
         } catch (Exception e) {
             throw new DaoException(e);
@@ -74,21 +70,18 @@ public abstract class AbstractCrudDao<T, ID> {
     public void deleteById(ID id, Class<T> entityClass) {
         try {
             String query = queryBuilder.buildDeleteByIdQuery(id, entityClass);
-            genericExecuteUpdateQuery(query, statement -> {
-                dataMapper.bindValues(statement, id);
-                return null;
-            });
+            genericExecuteUpdateQuery(query, statement -> dataMapper.bindValues(statement, id));
         } catch (Exception e) {
             throw new DaoException(e);
         }
     }
 
     protected <R> R genericExecuteQuery(String query,
-                                        Function<PreparedStatement, Void> prepareStatement,
+                                        Consumer<PreparedStatement> prepareStatement,
                                         Function<ResultSet, R> parseResultSet) {
         try (Connection connection = createConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                prepareStatement.apply(statement);
+                prepareStatement.accept(statement);
                 ResultSet resultSet = statement.executeQuery();
                 return parseResultSet.apply(resultSet);
             }
@@ -98,10 +91,10 @@ public abstract class AbstractCrudDao<T, ID> {
     }
 
     protected void genericExecuteUpdateQuery(String query,
-                                             Function<PreparedStatement, Void> prepareStatement) {
+                                             Consumer<PreparedStatement> prepareStatement) {
         try (Connection connection = createConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                prepareStatement.apply(statement);
+                prepareStatement.accept(statement);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
