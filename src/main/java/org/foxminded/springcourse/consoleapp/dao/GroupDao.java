@@ -6,7 +6,8 @@ import org.foxminded.springcourse.consoleapp.model.Group;
 import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
