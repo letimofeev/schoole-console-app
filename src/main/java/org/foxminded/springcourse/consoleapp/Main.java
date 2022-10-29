@@ -23,6 +23,7 @@ public class Main {
         List<Student> studentsByCourseName = studentDao.findAllByCourseName("course4");
         System.out.println(studentsByCourseName);
 
-        studentDao.deleteStudentCourse(2, 4);
+        List<Group> allGroups = groupDao.findAll(Group.class);
+        System.out.println(allGroups);
     }
 }

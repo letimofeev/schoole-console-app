@@ -6,6 +6,8 @@ public interface CrudQueryBuilder<T, ID> {
 
     String buildFindByIdQuery(ID id, Class<T> entityClass);
 
+    String buildFindAllQuery(Class<T> entityClass);
+
     String buildUpdateQuery(T entity);
 
     String buildDeleteByIdQuery(ID id, Class<T> entityClass);

@@ -37,6 +37,15 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
     }
 
     @Override
+    public String buildFindAllQuery(Class<T> entityClass) {
+        String queryTemplate = "SELECT %s FROM %s;";
+        EntityMetaData entityMetaData = metaDataManager.getMetaData(entityClass);
+        return String.format(queryTemplate,
+                getColumns(entityMetaData),
+                entityMetaData.getTable());
+    }
+
+    @Override
     public String buildUpdateQuery(T entity) {
         String queryTemplate = "UPDATE %s SET %s WHERE %s = ?";
         EntityMetaData entityMetaData = metaDataManager.getMetaData(entity.getClass());

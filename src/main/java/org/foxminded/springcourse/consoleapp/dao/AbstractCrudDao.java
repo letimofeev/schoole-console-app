@@ -6,6 +6,7 @@ import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -49,6 +50,16 @@ public abstract class AbstractCrudDao<T, ID> {
                 return Optional.empty();
             }
             return Optional.of(entity);
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public List<T> findAll(Class<T> entityClass) {
+        try {
+            String query = queryBuilder.buildFindAllQuery(entityClass);
+            return genericExecuteQuery(query, statement -> {},
+                    resultSet -> dataMapper.collectEntities(entityClass, resultSet));
         } catch (Exception e) {
             throw new DaoException(e);
         }
