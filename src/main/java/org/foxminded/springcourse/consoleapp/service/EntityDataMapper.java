@@ -2,16 +2,20 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
+import org.foxminded.springcourse.consoleapp.exception.DaoException;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
 import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
+import org.foxminded.springcourse.consoleapp.model.Group;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,17 +76,17 @@ public class EntityDataMapper<T> {
         }
     }
 
-    public void getNextAndBindEntity(T entity, ResultSet resultSet) {
+    public void getNextAndFillEntity(T entity, ResultSet resultSet) {
         try {
             if (resultSet.next()) {
-                bindEntity(entity, resultSet);
+                fillEntity(entity, resultSet);
             }
         } catch (SQLException e) {
             throw new EntityDataMapperException(e);
         }
     }
 
-    public void bindEntity(T entity, ResultSet resultSet) {
+    public void fillEntity(T entity, ResultSet resultSet) {
         Set<String> columns = getResultSetColumns(resultSet);
         for (Field field : entity.getClass().getDeclaredFields()) {
             Column annotation = field.getAnnotation(Column.class);
@@ -98,6 +102,20 @@ public class EntityDataMapper<T> {
                     }
                 }
             }
+        }
+    }
+
+    public List<T> collectEntities(Class<T> entityClass, ResultSet resultSet) {
+        List<T> entities = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                T entity = entityClass.getConstructor().newInstance();
+                fillEntity(entity, resultSet);
+                entities.add(entity);
+            }
+            return entities;
+        } catch (Exception e) {
+            throw new EntityDataMapperException(e);
         }
     }
 

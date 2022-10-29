@@ -15,8 +15,8 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
 
     public GroupDao(ConnectionConfig connectionConfig,
                     CrudQueryBuilder<Group, Integer> queryBuilder,
-                    EntityDataMapper<Group> dataBinder) {
-        super(connectionConfig, queryBuilder, dataBinder);
+                    EntityDataMapper<Group> dataMapper) {
+        super(connectionConfig, queryBuilder, dataMapper);
     }
 
     public List<Group> findAllWithStudentCountLessThanEqual(int studentCount) {
@@ -26,7 +26,7 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
                 "GROUP BY groups.group_id, group_name\n" +
                 "HAVING count(*) >= ?";
         return genericExecuteQuery(sql, statement -> bindStudentCount(statement, studentCount),
-                this::parseGroups);
+                resultSet -> dataMapper.collectEntities(Group.class, resultSet));
     }
 
     private Void bindStudentCount(PreparedStatement statement, int studentCount) {
@@ -36,19 +36,5 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
             throw new DaoException(e);
         }
         return null;
-    }
-
-    private List<Group> parseGroups(ResultSet resultSet) {
-        List<Group> groups = new ArrayList<>();
-        try {
-            while (resultSet.next()) {
-                Group group = new Group();
-                dataMapper.bindEntity(group, resultSet);
-                groups.add(group);
-            }
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-        return groups;
     }
 }

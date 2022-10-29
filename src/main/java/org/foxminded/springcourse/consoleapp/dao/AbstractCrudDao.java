@@ -29,7 +29,7 @@ public abstract class AbstractCrudDao<T, ID> {
                 dataMapper.bindUpdatableColumns(statement, entity);
                 return null;
             }, resultSet -> {
-                dataMapper.getNextAndBindEntity(entity, resultSet);
+                dataMapper.getNextAndFillEntity(entity, resultSet);
                 return null;
             });
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public abstract class AbstractCrudDao<T, ID> {
                 dataMapper.bindValue(statement, id);
                 return null;
             }, resultSet -> {
-                dataMapper.getNextAndBindEntity(entity, resultSet);
+                dataMapper.getNextAndFillEntity(entity, resultSet);
                 return null;
             });
             if (isEntityEmpty(entity, entityClass)) {
