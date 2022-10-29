@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Main {
 
@@ -21,6 +20,7 @@ public class Main {
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(2);
         System.out.println(groups);
 
-        studentDao.addStudentCourse(2, 3);
+        List<Student> studentsByCourseName = studentDao.findAllByCourseName("course4");
+        System.out.println(studentsByCourseName);
     }
 }

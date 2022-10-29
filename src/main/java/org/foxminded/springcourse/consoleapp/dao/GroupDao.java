@@ -7,7 +7,6 @@ import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -29,12 +28,11 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
                 resultSet -> dataMapper.collectEntities(Group.class, resultSet));
     }
 
-    private Void bindStudentCount(PreparedStatement statement, int studentCount) {
+    private void bindStudentCount(PreparedStatement statement, int studentCount) {
         try {
             statement.setInt(1, studentCount);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
-        return null;
     }
 }
