@@ -21,6 +21,11 @@ public class StudentDao extends AbstractCrudDao<Student, Integer> {
         genericExecuteUpdateQuery(sql, statement -> dataMapper.bindValues(statement, studentId, courseId));
     }
 
+    public void deleteStudentCourse(int studentId, Object courseId) {
+        String sql = "DELETE FROM students_courses WHERE student_id = ? AND course_id = ?";
+        genericExecuteUpdateQuery(sql, statement -> dataMapper.bindValues(statement, studentId, courseId));
+    }
+
     public List<Student> findAllByCourseName(String courseName) {
         String sql = "SELECT students.student_id, group_id, first_name, last_name\n" +
                 "FROM students\n" +

@@ -22,5 +22,7 @@ public class Main {
 
         List<Student> studentsByCourseName = studentDao.findAllByCourseName("course4");
         System.out.println(studentsByCourseName);
+
+        studentDao.deleteStudentCourse(2, 4);
     }
 }
