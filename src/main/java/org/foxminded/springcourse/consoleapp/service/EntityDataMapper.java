@@ -2,15 +2,12 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
-import org.foxminded.springcourse.consoleapp.exception.DaoException;
 import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException;
 import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
-import org.foxminded.springcourse.consoleapp.model.Group;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -64,8 +61,11 @@ public class EntityDataMapper<T> {
         bindValue(statement, id, bindParameterIndex);
     }
 
-    public void bindValue(PreparedStatement statement, Object value) {
-        bindValue(statement, value, 1);
+    public void bindValues(PreparedStatement statement, Object... values) {
+        for (int i = 1; i <= values.length; i++) {
+            Object value = values[i - 1];
+            bindValue(statement, value, i);
+        }
     }
 
     public void bindValue(PreparedStatement statement, Object value, int bindParameterIndex) {

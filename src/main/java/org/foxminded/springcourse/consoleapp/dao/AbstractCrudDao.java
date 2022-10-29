@@ -42,7 +42,7 @@ public abstract class AbstractCrudDao<T, ID> {
             String query = queryBuilder.buildFindByIdQuery(id, entityClass);
             T entity = entityClass.getConstructor().newInstance();
             genericExecuteQuery(query, statement -> {
-                dataMapper.bindValue(statement, id);
+                dataMapper.bindValues(statement, id);
                 return null;
             }, resultSet -> {
                 dataMapper.getNextAndFillEntity(entity, resultSet);
@@ -75,7 +75,7 @@ public abstract class AbstractCrudDao<T, ID> {
         try {
             String query = queryBuilder.buildDeleteByIdQuery(id, entityClass);
             genericExecuteUpdateQuery(query, statement -> {
-                dataMapper.bindValue(statement, id);
+                dataMapper.bindValues(statement, id);
                 return null;
             });
         } catch (Exception e) {
