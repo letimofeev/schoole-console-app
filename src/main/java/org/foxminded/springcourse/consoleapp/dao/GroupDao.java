@@ -13,9 +13,6 @@ import java.util.List;
 @Repository
 public class GroupDao extends AbstractCrudDao<Group, Integer> {
 
-    private static final String GROUP_ID_COLUMN = "group_id";
-    private static final String GROUP_NAME_COLUMN = "group_name";
-
     public GroupDao(ConnectionConfig connectionConfig,
                     CrudQueryBuilder<Group, Integer> queryBuilder,
                     EntityDataMapper<Group> dataBinder) {
@@ -45,9 +42,8 @@ public class GroupDao extends AbstractCrudDao<Group, Integer> {
         List<Group> groups = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                int id = resultSet.getInt(GROUP_ID_COLUMN);
-                String name = resultSet.getString(GROUP_NAME_COLUMN);
-                Group group = new Group(id, name);
+                Group group = new Group();
+                dataMapper.bindEntity(group, resultSet);
                 groups.add(group);
             }
         } catch (SQLException e) {
