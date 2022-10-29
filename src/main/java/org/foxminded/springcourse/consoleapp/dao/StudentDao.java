@@ -13,4 +13,9 @@ public class StudentDao extends AbstractCrudDao<Student, Integer> {
                       EntityDataMapper<Student> dataBinder) {
         super(connectionConfig, queryBuilder, dataBinder);
     }
+
+    public <ID2> void addStudentCourse(int studentId, ID2 courseId) {
+        String sql = "INSERT INTO students_courses VALUES (?, ?)";
+        genericExecuteUpdateQuery(sql, statement -> dataMapper.bindValues(statement, studentId, courseId));
+    }
 }

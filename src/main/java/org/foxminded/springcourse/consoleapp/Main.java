@@ -21,9 +21,6 @@ public class Main {
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(2);
         System.out.println(groups);
 
-        studentDao.deleteById(1, Student.class);
-
-        Optional<Student> studentOptional = studentDao.findById(1, Student.class);
-        studentOptional.ifPresent(System.out::println);
+        studentDao.addStudentCourse(2, 3);
     }
 }

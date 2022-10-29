@@ -90,8 +90,7 @@ public abstract class AbstractCrudDao<T, ID> {
         }
     }
 
-    protected void genericExecuteUpdateQuery(String query,
-                                             Consumer<PreparedStatement> prepareStatement) {
+    protected void genericExecuteUpdateQuery(String query, Consumer<PreparedStatement> prepareStatement) {
         try (Connection connection = createConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 prepareStatement.accept(statement);
