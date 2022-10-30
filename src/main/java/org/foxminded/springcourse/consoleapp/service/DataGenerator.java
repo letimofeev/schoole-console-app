@@ -2,7 +2,6 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.foxminded.springcourse.consoleapp.dao.StudentDao;
 import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Group;
 import org.foxminded.springcourse.consoleapp.model.Student;
