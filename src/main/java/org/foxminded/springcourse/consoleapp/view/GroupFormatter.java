@@ -10,7 +10,7 @@ public class GroupFormatter {
 
     public String formatGroups(List<Group> groups) {
         if (groups.isEmpty()) {
-            return "No groups found";
+            return "No groups found\n";
         }
         StringBuilder formattedStudents = new StringBuilder();
         for (Group group : groups) {

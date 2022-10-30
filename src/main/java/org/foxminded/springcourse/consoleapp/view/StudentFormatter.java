@@ -10,7 +10,7 @@ public class StudentFormatter {
 
     public String formatStudents(List<Student> students) {
         if (students.isEmpty()) {
-            return "No students found";
+            return "No students found\n";
         }
         StringBuilder formattedStudents = new StringBuilder();
         for (Student student : students) {

@@ -41,7 +41,7 @@ public class CommandHandlerMapper {
                 }
             }
         }
-        throw new CommandHandlerMapperException("No handlers found for command");
+        throw new CommandHandlerMapperException("No handlers found for command: " + command);
     }
 
     private List<Object> getAnnotatedRegexGroups(Method method, Matcher matcher) {
@@ -51,11 +51,12 @@ public class CommandHandlerMapper {
             for (Parameter parameter : method.getParameters()) {
                 PatternGroup annotation = parameter.getAnnotation(PatternGroup.class);
                 if (annotation != null) {
-                    int groupNumber = annotation.group();
+                    int groupNumber = annotation.value();
                     Class<?> parameterType = parameter.getType();
                     String group = matcher.group(groupNumber);
                     Object arg = getResolvedTypeGroup(group, parameterType);
                     args.add(arg);
+
                 }
             }
 

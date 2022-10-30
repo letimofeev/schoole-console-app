@@ -20,8 +20,8 @@ public class GroupCommandHandler extends CommandHandler {
         this.groupFormatter = groupFormatter;
     }
 
-    @CommandMatching(regex = "find all groups with students number >= (\\d+)")
-    public String processFindGroupsWithLTEStudentCount(@PatternGroup(group = 1) int studentCount) {
+    @CommandMatching(regex = "Find all groups with students number <= (\\d+)")
+    public String findAllWithLessThanEqualStudentCount(@PatternGroup int studentCount) {
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(studentCount);
         return groupFormatter.formatGroups(groups);
     }
