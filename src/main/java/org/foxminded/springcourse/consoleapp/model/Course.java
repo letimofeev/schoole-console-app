@@ -20,4 +20,9 @@ public class Course {
 
     @Column(name = "course_description")
     private String courseDescription;
+
+    public Course(String courseName, String courseDescription) {
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
 }
