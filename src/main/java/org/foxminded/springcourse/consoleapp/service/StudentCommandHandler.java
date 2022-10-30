@@ -46,4 +46,10 @@ public class StudentCommandHandler extends CommandHandler {
         studentDao.addStudentCourse(studentId, courseId);
         return "Student was added to course\n";
     }
+
+    @CommandMatching(regex = "Remove student with id = (\\d+) from course with id = (\\d+)")
+    public String deleteStudentCourse(@PatternGroup(1) int studentId, @PatternGroup(2) int courseId) {
+        studentDao.deleteStudentCourse(studentId, courseId);
+        return "Student was removed from course\n";
+    }
 }
