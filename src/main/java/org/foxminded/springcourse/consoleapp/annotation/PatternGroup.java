@@ -10,5 +10,5 @@ import static java.lang.annotation.ElementType.*;
 @Target(value = {PARAMETER, TYPE, TYPE_PARAMETER, TYPE_USE})
 public @interface PatternGroup {
 
-    int value() default 1;
+    int value();
 }

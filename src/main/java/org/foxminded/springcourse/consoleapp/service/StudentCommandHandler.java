@@ -21,7 +21,7 @@ public class StudentCommandHandler extends CommandHandler {
     }
 
     @CommandMatching(regex = "Find all students with course name = (\\w+)")
-    public String findAllByCourseName(@PatternGroup String courseName) {
+    public String findAllByCourseName(@PatternGroup(1) String courseName) {
         List<Student> students = studentDao.findAllByCourseName(courseName);
         return studentFormatter.formatStudents(students);
     }
@@ -36,8 +36,14 @@ public class StudentCommandHandler extends CommandHandler {
     }
 
     @CommandMatching(regex = "Delete student with id = (\\d+)")
-    public String deleteStudentById(@PatternGroup int studentId) {
+    public String deleteStudentById(@PatternGroup(1) int studentId) {
         studentDao.deleteById(studentId, Student.class);
         return "Student was deleted\n";
+    }
+
+    @CommandMatching(regex = "Add student with id = (\\d+) to course with id = (\\d+)")
+    public String addStudentCourse(@PatternGroup(1) int studentId, @PatternGroup(2) int courseId) {
+        studentDao.addStudentCourse(studentId, courseId);
+        return "Student was added to course\n";
     }
 }

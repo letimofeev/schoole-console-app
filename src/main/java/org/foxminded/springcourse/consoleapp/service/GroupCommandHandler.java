@@ -21,7 +21,7 @@ public class GroupCommandHandler extends CommandHandler {
     }
 
     @CommandMatching(regex = "Find all groups with students number <= (\\d+)")
-    public String findAllWithLessThanEqualStudentCount(@PatternGroup int studentCount) {
+    public String findAllWithLessThanEqualStudentCount(@PatternGroup(1) int studentCount) {
         List<Group> groups = groupDao.findAllWithStudentCountLessThanEqual(studentCount);
         return groupFormatter.formatGroups(groups);
     }
