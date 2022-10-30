@@ -22,7 +22,7 @@ public class StudentFormatter {
     }
 
     public String formatStudent(Student student) {
-        return String.format("Student: id = %d, group id = %d, first name = %s, last name = %s",
+        return String.format("Student: id = %d, group id = %d, first name = %s, last name = %s\n",
                 student.getId(),
                 student.getGroupId(),
                 student.getFirstName(),

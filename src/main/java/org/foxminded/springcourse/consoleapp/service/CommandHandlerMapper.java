@@ -35,7 +35,7 @@ public class CommandHandlerMapper {
                         try {
                             return method.invoke(commandHandler, args.toArray()).toString();
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new CommandHandlerMapperException(e);
+                            throw new CommandHandlerMapperException(e.getCause());
                         }
                     }
                 }
@@ -56,10 +56,8 @@ public class CommandHandlerMapper {
                     String group = matcher.group(groupNumber);
                     Object arg = getResolvedTypeGroup(group, parameterType);
                     args.add(arg);
-
                 }
             }
-
         }
         return args;
     }

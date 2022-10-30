@@ -3,6 +3,8 @@ package org.foxminded.springcourse.consoleapp.manager;
 import org.foxminded.springcourse.consoleapp.service.CommandHandlerMapper;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
+
 @Component
 public class CommandManager {
 
@@ -13,6 +15,13 @@ public class CommandManager {
     }
 
     public String processCommand(String command) {
-        return commandHandlerMapper.applyCommandHandler(command);
+        String result;
+        try {
+            result = commandHandlerMapper.applyCommandHandler(command);
+        } catch (Exception e) {
+            result = String.format("Unexpected error: %s", e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
     }
 }

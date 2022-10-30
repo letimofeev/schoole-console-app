@@ -26,4 +26,12 @@ public class StudentCommandHandler extends CommandHandler {
         return studentFormatter.formatStudents(students);
     }
 
+    @CommandMatching(regex = "Add student group id = (\\d+), first name = (\\w+), last name = (\\w+)")
+    public String addStudent(@PatternGroup(1) int groupId,
+                             @PatternGroup(2) String firstName,
+                             @PatternGroup(3) String lastName) {
+        Student student = new Student(0, groupId, firstName, lastName);
+        studentDao.save(student);
+        return studentFormatter.formatStudent(student);
+    }
 }
