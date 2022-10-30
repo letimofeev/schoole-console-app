@@ -34,4 +34,10 @@ public class StudentCommandHandler extends CommandHandler {
         studentDao.save(student);
         return studentFormatter.formatStudent(student);
     }
+
+    @CommandMatching(regex = "Delete student with id = (\\d+)")
+    public String deleteStudentById(@PatternGroup int studentId) {
+        studentDao.deleteById(studentId, Student.class);
+        return "Student was deleted\n";
+    }
 }

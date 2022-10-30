@@ -3,8 +3,6 @@ package org.foxminded.springcourse.consoleapp.manager;
 import org.foxminded.springcourse.consoleapp.service.CommandHandlerMapper;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
-
 @Component
 public class CommandManager {
 
