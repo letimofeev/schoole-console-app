@@ -2,6 +2,7 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.annotation.CommandMatching;
 import org.foxminded.springcourse.consoleapp.annotation.PatternGroup;
+import org.foxminded.springcourse.consoleapp.exception.CommandHandlerMapperException;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,13 +35,13 @@ public class CommandHandlerMapper {
                         try {
                             return method.invoke(commandHandler, args.toArray()).toString();
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e); // TODO
+                            throw new CommandHandlerMapperException(e);
                         }
                     }
                 }
             }
         }
-        throw new RuntimeException("No handlers found for command");
+        throw new CommandHandlerMapperException("No handlers found for command");
     }
 
     private List<Object> getAnnotatedRegexGroups(Method method, Matcher matcher) {
@@ -68,7 +69,8 @@ public class CommandHandlerMapper {
         } else if (parameterType == String.class) {
             return group;
         } else {
-            throw new UnsupportedOperationException(); // TODO
+            throw new CommandHandlerMapperException("Unsupported annotated parameter type: " +
+                    parameterType.getSimpleName());
         }
     }
 }
