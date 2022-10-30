@@ -18,6 +18,8 @@
     <junitjupiter.version>5.2.0</junitjupiter.version>
     <lombok.version>1.18.12</lombok.version>
     <mockito.version>4.3.1</mockito.version>
+    <apachecommons.version>3.8.1</apachecommons.version>
+    <springcontext.version>5.2.22.RELEASE</springcontext.version>
   </properties>
 
   <dependencies>
@@ -25,6 +27,16 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${springcontext.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apachecommons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -43,16 +55,6 @@
       <artifactId>mockito-core</artifactId>
       <version>${mockito.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>5.2.22.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
     </dependency>
   </dependencies>
 
@@ -80,6 +82,15 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+                <mainClass>org.foxminded.springcourse.consoleapp.Main</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
