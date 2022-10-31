@@ -21,4 +21,8 @@ public class EntityMetaDataCache {
     public boolean containsKey(Class<?> entityClass) {
         return cache.containsKey(entityClass);
     }
+
+    public void clear() {
+        cache.clear();
+    }
 }
