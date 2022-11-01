@@ -18,7 +18,6 @@ public class CommandManager {
             result = commandHandlerMapper.applyCommandHandler(command);
         } catch (Exception e) {
             result = String.format("Unexpected error: %s", e.getMessage());
-            e.printStackTrace();
         }
         return result;
     }
