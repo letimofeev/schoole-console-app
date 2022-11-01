@@ -42,4 +42,14 @@ public class EntityMetaData {
         result = 31 * result + (updatableColumns != null ? updatableColumns.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "EntityMetaData{" +
+                "table='" + table + '\'' +
+                ", idColumn='" + idColumn + '\'' +
+                ", columns=" + columns +
+                ", updatableColumns=" + updatableColumns +
+                '}';
+    }
 }
