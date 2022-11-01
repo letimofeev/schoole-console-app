@@ -25,14 +25,18 @@ public abstract class AbstractCrudDao<T, ID> {
     }
 
     public void save(T entity) {
-        try {
-            String query = queryBuilder.buildSaveQuery(entity);
-            genericExecuteQuery(query, statement -> dataMapper.bindUpdatableColumns(statement, entity),
-                    resultSet -> {
-                        dataMapper.getNextAndFillEntity(entity, resultSet);
-                        return null;
-                    });
-        } catch (Exception e) {
+        String query = queryBuilder.buildSaveQuery(entity);
+        try (Connection connection = createConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                dataMapper.bindUpdatableColumns(statement, entity);
+                statement.executeUpdate();
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    Object generatedId = resultSet.getObject(1);
+                    dataMapper.fillEntityId(entity, generatedId);
+                }
+            }
+        } catch (SQLException e) {
             throw new DaoException(e);
         }
     }

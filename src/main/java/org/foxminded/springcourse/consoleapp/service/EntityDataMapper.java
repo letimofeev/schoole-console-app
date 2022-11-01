@@ -6,6 +6,7 @@ import org.foxminded.springcourse.consoleapp.exception.EntityDataMapperException
 import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -103,6 +104,19 @@ public class EntityDataMapper<T> {
                 }
             }
         }
+    }
+
+    public void fillEntityId(T entity, Object value) {
+        for (Field field : entity.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class)) {
+                field.setAccessible(true);
+                if (value instanceof Long) {
+                    value = ((Long) value).intValue();
+                }
+                ReflectionUtils.setField(field, entity, value);
+            }
+        }
+
     }
 
     public List<T> collectEntities(Class<T> entityClass, ResultSet resultSet) {
