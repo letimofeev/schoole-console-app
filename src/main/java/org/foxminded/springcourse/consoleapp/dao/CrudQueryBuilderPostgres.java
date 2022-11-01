@@ -17,13 +17,12 @@ public class CrudQueryBuilderPostgres<T, ID> implements CrudQueryBuilder<T, ID> 
 
     @Override
     public String buildSaveQuery(T entity) {
-        String queryTemplate = "INSERT INTO %s (%s) VALUES (%s) RETURNING %s;";
+        String queryTemplate = "INSERT INTO %s (%s) VALUES (%s);";
         EntityMetaData entityMetaData = metaDataManager.getMetaData(entity.getClass());
         return String.format(queryTemplate,
                 entityMetaData.getTable(),
                 getUpdatableColumns(entityMetaData),
-                getBindParametersForInsert(entityMetaData),
-                entityMetaData.getIdColumn());
+                getBindParametersForInsert(entityMetaData));
     }
 
     @Override
