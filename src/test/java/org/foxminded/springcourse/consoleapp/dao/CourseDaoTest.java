@@ -6,6 +6,7 @@ import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
 import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.foxminded.springcourse.consoleapp.service.EntityMetaDataExtractor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,13 +34,20 @@ class CourseDaoTest {
     void setUp() throws SQLException {
         try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
             Statement statement = connection.createStatement();
-            statement.execute("drop table if exists courses;");
             statement.execute("create table courses \n" +
                     "(\n" +
                     "  course_id integer auto_increment,\n" +
                     "  course_name varchar(20),\n" +
                     "  course_description varchar(20)\n" +
                     ");");
+        }
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
+            Statement statement = connection.createStatement();
+            statement.execute("drop table if exists courses;");
         }
     }
 
