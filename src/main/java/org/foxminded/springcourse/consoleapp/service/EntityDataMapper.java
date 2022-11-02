@@ -53,10 +53,6 @@ public class EntityDataMapper<T> {
         return bindValuesNumber;
     }
 
-    public void bindIdValue(PreparedStatement statement, T entity) {
-        bindIdValue(statement, entity, 1);
-    }
-
     public void bindIdValue(PreparedStatement statement, T entity, int bindParameterIndex) {
         Object id = getEntityId(entity);
         bindValue(statement, id, bindParameterIndex);
