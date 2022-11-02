@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,5 +73,29 @@ class CourseDaoTest {
 
         assertTrue(actual.isPresent());
         assertEquals(course, actual.get());
+    }
+
+    @Test
+    void findAll_shouldReturnEmpty_whenCoursesDoNotExist() {
+        List<Course> actual = courseDao.findAll(Course.class);
+
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void findAll_shouldReturnActual_whenCoursesExist() {
+        for (int i = 1; i <= 100; i++) {
+            Course course = new Course("name" + i, "desc" + i);
+            courseDao.save(course);
+        }
+
+        List<Course> actual = courseDao.findAll(Course.class);
+
+        for (int i = 0; i < 100; i++) {
+            int id = i + 1;
+            Course expectedCourse = new Course(id, "name" + id, "desc" + id);
+            Course actualCourse = actual.get(i);
+            assertEquals(expectedCourse, actualCourse);
+        }
     }
 }
