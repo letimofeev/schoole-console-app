@@ -114,4 +114,16 @@ class CourseDaoTest {
         assertTrue(actualOptional.isPresent());
         assertEquals(expected, actualOptional.get());
     }
+
+    @Test
+    void deleteById_shouldDelete_whenCourseExists() {
+        Course course = new Course("meth", "varim meth");
+        courseDao.save(course);
+
+        assertTrue(courseDao.findById(1, Course.class).isPresent());
+
+        courseDao.deleteById(1, Course.class);
+
+        assertTrue(courseDao.findById(1, Course.class).isEmpty());
+    }
 }
