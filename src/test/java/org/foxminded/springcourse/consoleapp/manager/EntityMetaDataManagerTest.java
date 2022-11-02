@@ -1,7 +1,7 @@
 package org.foxminded.springcourse.consoleapp.manager;
 
-import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
-import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
+import org.foxminded.springcourse.consoleapp.dto.EntityMetaData;
+import org.foxminded.springcourse.consoleapp.dto.EntityMetaDataCache;
 import org.foxminded.springcourse.consoleapp.model.Group;
 import org.foxminded.springcourse.consoleapp.service.EntityMetaDataExtractor;
 import org.junit.jupiter.api.BeforeAll;

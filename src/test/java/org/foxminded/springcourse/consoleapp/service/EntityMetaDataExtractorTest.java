@@ -3,7 +3,7 @@ package org.foxminded.springcourse.consoleapp.service;
 import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.annotation.Table;
-import org.foxminded.springcourse.consoleapp.model.EntityMetaData;
+import org.foxminded.springcourse.consoleapp.dto.EntityMetaData;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

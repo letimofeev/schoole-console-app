@@ -1,4 +1,4 @@
-package org.foxminded.springcourse.consoleapp.model;
+package org.foxminded.springcourse.consoleapp.dto;
 
 import org.springframework.stereotype.Component;
 

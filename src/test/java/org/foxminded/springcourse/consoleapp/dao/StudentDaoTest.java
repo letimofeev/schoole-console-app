@@ -1,8 +1,8 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.dto.EntityMetaDataCache;
 import org.foxminded.springcourse.consoleapp.manager.EntityMetaDataManager;
 import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
-import org.foxminded.springcourse.consoleapp.model.EntityMetaDataCache;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.foxminded.springcourse.consoleapp.service.EntityMetaDataExtractor;
