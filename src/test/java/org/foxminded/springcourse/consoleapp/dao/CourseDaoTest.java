@@ -68,11 +68,11 @@ class CourseDaoTest {
         Course course = new Course("name", "desc");
         courseDao.save(course);
 
-        int id = course.getId();
-        Optional<Course> actual = courseDao.findById(id, Course.class);
+        Course expected = new Course(1, "name", "desc");
+        Optional<Course> actualOptional = courseDao.findById(course.getId(), Course.class);
 
-        assertTrue(actual.isPresent());
-        assertEquals(course, actual.get());
+        assertTrue(actualOptional.isPresent());
+        assertEquals(course, actualOptional.get());
     }
 
     @Test
@@ -97,5 +97,21 @@ class CourseDaoTest {
             Course actualCourse = actual.get(i);
             assertEquals(expectedCourse, actualCourse);
         }
+    }
+
+    @Test
+    void update_shouldUpdate_whenCourseUpdated() {
+        Course course = new Course("name", "desc");
+        courseDao.save(course);
+
+        course.setCourseName("updatedName");
+        course.setCourseDescription("updatedDesc");
+        courseDao.update(course);
+
+        Course expected = new Course(1, "updatedName", "updatedDesc");
+        Optional<Course> actualOptional = courseDao.findById(course.getId(), Course.class);
+
+        assertTrue(actualOptional.isPresent());
+        assertEquals(expected, actualOptional.get());
     }
 }
