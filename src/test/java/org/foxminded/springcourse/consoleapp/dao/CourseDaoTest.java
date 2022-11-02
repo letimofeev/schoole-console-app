@@ -61,4 +61,16 @@ class CourseDaoTest {
 
         assertTrue(actual.isEmpty());
     }
+
+    @Test
+    void findById_shouldReturnActual_whenCourseExists() {
+        Course course = new Course("name", "desc");
+        courseDao.save(course);
+
+        int id = course.getId();
+        Optional<Course> actual = courseDao.findById(id, Course.class);
+
+        assertTrue(actual.isPresent());
+        assertEquals(course, actual.get());
+    }
 }
