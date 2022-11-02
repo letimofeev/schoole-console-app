@@ -20,6 +20,7 @@
     <mockito.version>4.3.1</mockito.version>
     <apachecommons.version>3.8.1</apachecommons.version>
     <springcontext.version>5.2.22.RELEASE</springcontext.version>
+    <h2.version>1.4.194</h2.version>
   </properties>
 
   <dependencies>
@@ -44,6 +45,7 @@
       <version>${lombok.version}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -59,7 +61,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.194</version>
+      <version>${h2.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
