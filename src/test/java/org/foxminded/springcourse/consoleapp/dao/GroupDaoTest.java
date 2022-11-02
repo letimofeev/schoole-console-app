@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GroupDaoTest {
+
     private final ConnectionConfig connectionConfig = new ConnectionConfig("jdbc:h2:mem:school;DB_CLOSE_DELAY=-1", "sa", "");
 
     private final EntityMetaDataManager metaDataManager = new EntityMetaDataManager(new EntityMetaDataCache(), new EntityMetaDataExtractor());
@@ -42,8 +43,8 @@ class GroupDaoTest {
                     "(\n" +
                     "    student_id INTEGER AUTO_INCREMENT,\n" +
                     "    group_id   INTEGER,\n" +
-                    "    first_name TEXT,\n" +
-                    "    last_name  TEXT\n" +
+                    "    first_name VARCHAR(20),\n" +
+                    "    last_name  VARCHAR(20)\n" +
                     ");");
         }
     }
@@ -108,8 +109,8 @@ class GroupDaoTest {
         for (int i = 0; i < 100; i++) {
             int id = i + 1;
             Group expectedGroup = new Group(id, "name" + id);
-            Group actualCGroup = actual.get(i);
-            assertEquals(expectedGroup, actualCGroup);
+            Group actualGroup = actual.get(i);
+            assertEquals(expectedGroup, actualGroup);
         }
     }
 
