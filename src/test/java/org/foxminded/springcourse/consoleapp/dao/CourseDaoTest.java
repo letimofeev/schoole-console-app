@@ -34,11 +34,11 @@ class CourseDaoTest {
     void setUp() throws SQLException {
         try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
             Statement statement = connection.createStatement();
-            statement.execute("create table courses \n" +
+            statement.execute("CREATE TABLE courses \n" +
                     "(\n" +
-                    "  course_id integer auto_increment,\n" +
-                    "  course_name varchar(20),\n" +
-                    "  course_description varchar(20)\n" +
+                    "  course_id INTEGER AUTO_INCREMENT,\n" +
+                    "  course_name VARCHAR(20),\n" +
+                    "  course_description VARCHAR(20)\n" +
                     ");");
         }
     }
@@ -47,7 +47,7 @@ class CourseDaoTest {
     void tearDown() throws SQLException {
         try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
             Statement statement = connection.createStatement();
-            statement.execute("drop table if exists courses;");
+            statement.execute("DROP TABLE IF EXISTS courses;");
         }
     }
 
