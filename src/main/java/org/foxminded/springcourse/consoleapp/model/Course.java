@@ -6,6 +6,8 @@ import org.foxminded.springcourse.consoleapp.annotation.Column;
 import org.foxminded.springcourse.consoleapp.annotation.Id;
 import org.foxminded.springcourse.consoleapp.annotation.Table;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Table(name = "courses")
@@ -21,9 +23,38 @@ public class Course {
     @Column(name = "course_description")
     private String courseDescription;
 
+    public Course() {
+    }
+
     public Course(String courseName, String courseDescription) {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
+    }
+
+    public Course(int id, String courseName, String courseDescription) {
+        this.id = id;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        if (id != course.id) return false;
+        if (!Objects.equals(courseName, course.courseName)) return false;
+        return Objects.equals(courseDescription, course.courseDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (courseName != null ? courseName.hashCode() : 0);
+        result = 31 * result + (courseDescription != null ? courseDescription.hashCode() : 0);
+        return result;
     }
 
     @Override
