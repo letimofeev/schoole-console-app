@@ -30,7 +30,7 @@ public class StudentCommandHandler extends CommandHandler {
     public String addStudent(@PatternGroup(1) int groupId,
                              @PatternGroup(2) String firstName,
                              @PatternGroup(3) String lastName) {
-        Student student = new Student(0, groupId, firstName, lastName);
+        Student student = new Student(groupId, firstName, lastName);
         studentDao.save(student);
         return studentFormatter.formatStudent(student);
     }
