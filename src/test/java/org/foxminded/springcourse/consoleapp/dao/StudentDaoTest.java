@@ -92,7 +92,6 @@ class StudentDaoTest {
         Student expected = new Student(1, 1, "FirstName", "LastName");
         Optional<Student> actualOptional = studentDao.findById(student.getId(), Student.class);
 
-        assertTrue(actualOptional.isPresent());
         assertEquals(expected, actualOptional.get());
     }
 
@@ -131,7 +130,6 @@ class StudentDaoTest {
         Student expected = new Student(1, 1, "updatedName", "LastName");
         Optional<Student> actualOptional = studentDao.findById(student.getId(), Student.class);
 
-        assertTrue(actualOptional.isPresent());
         assertEquals(expected, actualOptional.get());
     }
 
@@ -140,15 +138,13 @@ class StudentDaoTest {
         Student student = new Student(1, "FirstName", "LastName");
         studentDao.save(student);
 
-        assertTrue(studentDao.findById(1, Student.class).isPresent());
-
         studentDao.deleteById(1, Student.class);
 
         assertTrue(studentDao.findById(1, Student.class).isEmpty());
     }
 
     @Test
-    void addStudentCourse() throws SQLException {
+    void addStudentCourse_shouldAddStudentToCourse_whenInputIsIds() throws SQLException {
         studentDao.addStudentCourse(10, 11);
 
         try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
@@ -156,10 +152,12 @@ class StudentDaoTest {
             statement.execute("SELECT * FROM students_courses");
             ResultSet resultSet = statement.getResultSet();
 
-            assertTrue(resultSet.next());
+            resultSet.next();
 
-            assertEquals(10, resultSet.getInt(1));
-            assertEquals(11, resultSet.getInt(2));
+            List<Integer> expected = List.of(10, 11);
+            List<Integer> actual = List.of(resultSet.getInt(1), resultSet.getInt(2));
+
+            assertEquals(expected, actual);
         }
     }
 
@@ -179,7 +177,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void findAllByCourseName() throws SQLException {
+    void findAllByCourseName_shouldReturnAllStudentsByCourseName_whenInputIsCourseName() throws SQLException {
         try (Connection connection = DriverManager.getConnection(connectionConfig.getUrl(), "sa", "")) {
             Statement statement = connection.createStatement();
             statement.execute("INSERT INTO courses (course_name, course_description)\n" +

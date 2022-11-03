@@ -79,8 +79,7 @@ class CourseDaoTest {
         Course expected = new Course(1, "name", "desc");
         Optional<Course> actualOptional = courseDao.findById(course.getId(), Course.class);
 
-        assertTrue(actualOptional.isPresent());
-        assertEquals(course, actualOptional.get());
+        assertEquals(expected, actualOptional.get());
     }
 
     @Test
@@ -119,7 +118,6 @@ class CourseDaoTest {
         Course expected = new Course(1, "updatedName", "updatedDesc");
         Optional<Course> actualOptional = courseDao.findById(course.getId(), Course.class);
 
-        assertTrue(actualOptional.isPresent());
         assertEquals(expected, actualOptional.get());
     }
 
@@ -127,8 +125,6 @@ class CourseDaoTest {
     void deleteById_shouldDelete_whenCourseExists() {
         Course course = new Course("meth", "varim meth");
         courseDao.save(course);
-
-        assertTrue(courseDao.findById(1, Course.class).isPresent());
 
         courseDao.deleteById(1, Course.class);
 

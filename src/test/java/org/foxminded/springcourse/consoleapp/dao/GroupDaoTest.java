@@ -86,8 +86,7 @@ class GroupDaoTest {
         Group expected = new Group(1, "name");
         Optional<Group> actualOptional = groupDao.findById(group.getId(), Group.class);
 
-        assertTrue(actualOptional.isPresent());
-        assertEquals(group, actualOptional.get());
+        assertEquals(expected, actualOptional.get());
     }
 
     @Test
@@ -125,7 +124,6 @@ class GroupDaoTest {
         Group expected = new Group(1, "updatedName");
         Optional<Group> actualOptional = groupDao.findById(group.getId(), Group.class);
 
-        assertTrue(actualOptional.isPresent());
         assertEquals(expected, actualOptional.get());
     }
 
@@ -133,8 +131,6 @@ class GroupDaoTest {
     void deleteById_shouldDelete_whenCourseExists() {
         Group group = new Group("methGroup");
         groupDao.save(group);
-
-        assertTrue(groupDao.findById(1, Group.class).isPresent());
 
         groupDao.deleteById(1, Group.class);
 

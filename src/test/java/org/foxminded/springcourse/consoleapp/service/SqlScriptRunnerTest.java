@@ -1,12 +1,12 @@
 package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
+import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SqlScriptRunnerTest {
 
@@ -26,13 +26,13 @@ class SqlScriptRunnerTest {
             statement.execute("select * from students");
             ResultSet resultSet = statement.getResultSet();
 
-            assertTrue(resultSet.next());
+            resultSet.next();
 
-            int expectedId = 10;
-            String expectedName = "Henry";
+            Student expected = new Student(10, 11, "Henry", "Aaa");
+            Student actual = new Student(resultSet.getInt(1), resultSet.getInt(2),
+                    resultSet.getString(3), resultSet.getString(4));
 
-            assertEquals(expectedId, resultSet.getInt(1));
-            assertEquals(expectedName, resultSet.getString(2));
+            assertEquals(expected, actual);
         }
     }
 }
