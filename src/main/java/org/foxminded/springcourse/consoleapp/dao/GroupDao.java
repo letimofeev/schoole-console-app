@@ -1,55 +1,39 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.exception.DaoException;
+import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.foxminded.springcourse.consoleapp.model.Group;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class GroupDao {
+public class GroupDao extends AbstractCrudDao<Group, Integer> {
 
-    private final ConnectionConfig connectionConfig;
-
-    private static final String GROUP_ID_COLUMN = "group_id";
-    private static final String GROUP_NAME_COLUMN = "group_name";
-
-    public GroupDao(ConnectionConfig connectionConfig) {
-        this.connectionConfig = connectionConfig;
+    public GroupDao(ConnectionConfig connectionConfig,
+                    CrudQueryBuilder<Group, Integer> queryBuilder,
+                    EntityDataMapper<Group> dataMapper) {
+        super(connectionConfig, queryBuilder, dataMapper);
     }
 
     public List<Group> findAllWithStudentCountLessThanEqual(int studentCount) {
-        List<Group> groups = new ArrayList<>();
-        try (Connection connection = createConnection()) {
-            String sql = "SELECT groups.group_id, group_name\n" +
-                    "FROM groups\n" +
-                    "JOIN students s on groups.group_id = s.group_id\n" +
-                    "GROUP BY groups.group_id, group_name\n" +
-                    "HAVING count(*) > ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setInt(1, studentCount);
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    int id = resultSet.getInt(GROUP_ID_COLUMN);
-                    String name = resultSet.getString(GROUP_NAME_COLUMN);
-                    Group group = new Group(id, name);
-                    groups.add(group);
-                }
-            }
+        String sql = "SELECT groups.group_id, group_name\n" +
+                "FROM groups\n" +
+                "JOIN students s on groups.group_id = s.group_id\n" +
+                "GROUP BY groups.group_id, group_name\n" +
+                "HAVING count(*) >= ?";
+        return genericExecuteQuery(sql, statement -> bindStudentCount(statement, studentCount),
+                resultSet -> dataMapper.collectEntities(Group.class, resultSet));
+    }
+
+    private void bindStudentCount(PreparedStatement statement, int studentCount) {
+        try {
+            statement.setInt(1, studentCount);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
-        return groups;
-    }
-
-    private Connection createConnection() throws SQLException {
-        String url = connectionConfig.getUrl();
-        String user = connectionConfig.getUser();
-        String password = connectionConfig.getPassword();
-        return DriverManager.getConnection(url, user, password);
     }
 }

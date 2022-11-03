@@ -1,13 +1,13 @@
 package org.foxminded.springcourse.consoleapp.config;
 
-import org.foxminded.springcourse.consoleapp.dao.ConnectionConfig;
+import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan("org.foxminded.springcourse.consoleapp")
-public class DatabaseConfig {
+public class ApplicationConfig {
 
     @Bean
     public ConnectionConfig connectionConfig() {

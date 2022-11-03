@@ -1,4 +1,4 @@
-package org.foxminded.springcourse.consoleapp.dao;
+package org.foxminded.springcourse.consoleapp.model;
 
 import lombok.Getter;
 import lombok.Setter;
