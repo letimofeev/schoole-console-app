@@ -27,15 +27,15 @@ public abstract class AbstractCrudDao<T, ID> {
     public void save(T entity) {
         String query = queryBuilder.buildSaveQuery(entity);
         try (Connection connection = createConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                dataMapper.bindUpdatableColumns(statement, entity);
-                statement.executeUpdate();
-                ResultSet resultSet = statement.getGeneratedKeys();
-                if (resultSet.next()) {
-                    Object generatedId = resultSet.getObject(1);
-                    dataMapper.fillEntityId(entity, generatedId);
-                }
+            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            dataMapper.bindUpdatableColumns(statement, entity);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                Object generatedId = resultSet.getObject(1);
+                dataMapper.fillEntityId(entity, generatedId);
             }
+
         } catch (SQLException e) {
             throw new DaoException(e);
         }
@@ -62,7 +62,8 @@ public abstract class AbstractCrudDao<T, ID> {
     public List<T> findAll(Class<T> entityClass) {
         try {
             String query = queryBuilder.buildFindAllQuery(entityClass);
-            return genericExecuteQuery(query, statement -> {},
+            return genericExecuteQuery(query, statement -> {
+                    },
                     resultSet -> dataMapper.collectEntities(entityClass, resultSet));
         } catch (Exception e) {
             throw new DaoException(e);
@@ -95,11 +96,10 @@ public abstract class AbstractCrudDao<T, ID> {
                                         Consumer<PreparedStatement> prepareStatement,
                                         Function<ResultSet, R> parseResultSet) {
         try (Connection connection = createConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                prepareStatement.accept(statement);
-                ResultSet resultSet = statement.executeQuery();
-                return parseResultSet.apply(resultSet);
-            }
+            PreparedStatement statement = connection.prepareStatement(query);
+            prepareStatement.accept(statement);
+            ResultSet resultSet = statement.executeQuery();
+            return parseResultSet.apply(resultSet);
         } catch (SQLException e) {
             throw new DaoException(e);
         }
@@ -107,10 +107,9 @@ public abstract class AbstractCrudDao<T, ID> {
 
     protected void genericExecuteUpdateQuery(String query, Consumer<PreparedStatement> prepareStatement) {
         try (Connection connection = createConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                prepareStatement.accept(statement);
-                statement.executeUpdate();
-            }
+            PreparedStatement statement = connection.prepareStatement(query);
+            prepareStatement.accept(statement);
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException(e);
         }

@@ -24,9 +24,8 @@ public class SqlScriptRunner {
     public void executeSqlScript(String path) {
         String script = getScript(path);
         try (Connection connection = createConnection()) {
-            try (Statement statement = connection.createStatement()) {
-                statement.execute(script);
-            }
+            Statement statement = connection.createStatement();
+            statement.execute(script);
         } catch (SQLException e) {
             throw new SqlScriptRunnerException(e);
         }
