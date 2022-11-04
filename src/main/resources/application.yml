@@ -1,7 +1,11 @@
 spring:
   datasource:
-    initialization-mode: never
     url: jdbc:postgresql://localhost:5432/school
     username: postgres
+    password: postgres
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/school
+    user: postgres
     password: postgres
 
