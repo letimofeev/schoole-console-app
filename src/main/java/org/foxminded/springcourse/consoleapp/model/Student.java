@@ -49,7 +49,7 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" +
-                "id=" + studentId +
+                "studentId=" + studentId +
                 ", groupId=" + groupId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
