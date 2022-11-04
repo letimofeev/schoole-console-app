@@ -1,38 +1,20 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
-import org.foxminded.springcourse.consoleapp.model.ConnectionConfig;
 import org.foxminded.springcourse.consoleapp.model.Student;
-import org.foxminded.springcourse.consoleapp.service.EntityDataMapper;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class StudentDao extends AbstractCrudDao<Student, Integer> {
+public interface StudentDao {
 
-    public StudentDao(ConnectionConfig connectionConfig,
-                      CrudQueryBuilder<Student, Integer> queryBuilder,
-                      EntityDataMapper<Student> dataMapper) {
-        super(connectionConfig, queryBuilder, dataMapper);
-    }
+    void save(Student student);
 
-    public void addStudentCourse(int studentId, Object courseId) {
-        String sql = "INSERT INTO students_courses VALUES (?, ?)";
-        genericExecuteUpdateQuery(sql, statement -> dataMapper.bindValues(statement, studentId, courseId));
-    }
+    List<Student> findAll();
 
-    public void deleteStudentCourse(int studentId, Object courseId) {
-        String sql = "DELETE FROM students_courses WHERE student_id = ? AND course_id = ?";
-        genericExecuteUpdateQuery(sql, statement -> dataMapper.bindValues(statement, studentId, courseId));
-    }
+    List<Student> findAllByCourseName(String courseName);
 
-    public List<Student> findAllByCourseName(String courseName) {
-        String sql = "SELECT students.student_id, group_id, first_name, last_name\n" +
-                "FROM students\n" +
-                "JOIN students_courses sc on students.student_id = sc.student_id\n" +
-                "JOIN courses c on c.course_id = sc.course_id\n" +
-                "WHERE c.course_name = ?;";
-        return genericExecuteQuery(sql, statement -> dataMapper.bindValues(statement, courseName),
-                resultSet -> dataMapper.collectEntities(Student.class, resultSet));
-    }
+    void deleteById(int id);
+
+    void addStudentCourse(int studentId, int courseId);
+
+    void deleteStudentCourse(int studentId, int courseId);
 }

@@ -16,7 +16,7 @@ class GroupFormatterTest {
     void formatGroups_shouldReturnNotification_whenInputIsEmptyList() {
         List<Group> groups = Collections.emptyList();
 
-        String expected = "No groups found\n";
+        String expected = "No groups found";
         String actual = groupFormatter.formatGroups(groups);
 
         assertEquals(expected, actual);
@@ -32,7 +32,7 @@ class GroupFormatterTest {
         String expected = "Group: id = 123, group name = Korn\n" +
                 "Group: id = 111, group name = Slipknot\n" +
                 "Group: id = 532, group name = Queen\n" +
-                "Group: id = 423, group name = Pink Floyd\n";
+                "Group: id = 423, group name = Pink Floyd";
         String actual = groupFormatter.formatGroups(groups);
 
         assertEquals(expected, actual);

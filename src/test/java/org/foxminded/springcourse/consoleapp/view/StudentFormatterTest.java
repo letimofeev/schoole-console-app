@@ -16,7 +16,7 @@ class StudentFormatterTest {
     void formatStudents_shouldReturnNotification_whenInputIsEmptyList() {
         List<Student> students = Collections.emptyList();
 
-        String expected = "No students found\n";
+        String expected = "No students found";
         String actual = studentFormatter.formatStudents(students);
 
         assertEquals(expected, actual);
@@ -32,7 +32,7 @@ class StudentFormatterTest {
         String expected = "Student: id = 1, group id = 1, first name = One, last name = Onenov\n" +
                 "Student: id = 2, group id = 222, first name = Two, last name = Too Too\n" +
                 "Student: id = 3, group id = 333, first name = Three, last name = Free\n" +
-                "Student: id = 4, group id = 999, first name = Four, last name = Sour\n";
+                "Student: id = 4, group id = 999, first name = Four, last name = Sour";
         String actual = studentFormatter.formatStudents(students);
 
         assertEquals(expected, actual);

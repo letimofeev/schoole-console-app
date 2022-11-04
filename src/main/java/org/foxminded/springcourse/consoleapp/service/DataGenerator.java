@@ -20,7 +20,7 @@ public class DataGenerator {
             String digits = RandomStringUtils.randomNumeric(2);
             String groupName = String.format("%s_%s", letters, digits);
             Group group = new Group();
-            group.setName(groupName);
+            group.setGroupName(groupName);
             groups.add(group);
         }
         return groups;
@@ -48,7 +48,7 @@ public class DataGenerator {
             String firstName = getRandomElement(firstNames);
             String lastName = getRandomElement(lastNames);
             Student student = new Student();
-            student.setGroupId(group.getId());
+            student.setGroupId(group.getGroupId());
             student.setFirstName(firstName);
             student.setLastName(lastName);
             students.add(student);
