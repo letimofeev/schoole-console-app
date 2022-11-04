@@ -12,7 +12,7 @@ public class GroupRowMapper implements RowMapper<Group> {
     public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Group group = new Group();
         group.setGroupId(resultSet.getInt("group_id"));
-        group.setGroupName(resultSet.getString("group_id"));
+        group.setGroupName(resultSet.getString("group_name"));
 
         return group;
     }

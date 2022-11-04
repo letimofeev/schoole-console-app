@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
-import org.foxminded.springcourse.consoleapp.model.Student;
+import org.foxminded.springcourse.consoleapp.model.Group;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,9 +15,9 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 @TestInstance(PER_CLASS)
-class StudentRowMapperTest {
+class GroupRowMapperTest {
 
-    private final StudentRowMapper rowMapper = new StudentRowMapper();
+    private final GroupRowMapper rowMapper = new GroupRowMapper();
 
     @Mock
     private ResultSet resultSet;
@@ -26,16 +26,14 @@ class StudentRowMapperTest {
     void setUp() throws SQLException {
         openMocks(this);
 
-        when(resultSet.getInt("student_id")).thenReturn(1001);
-        when(resultSet.getInt("group_id")).thenReturn(722);
-        when(resultSet.getString("first_name")).thenReturn("First");
-        when(resultSet.getString("last_name")).thenReturn("Last");
+        when(resultSet.getInt("group_id")).thenReturn(901);
+        when(resultSet.getString("group_name")).thenReturn("Name");
     }
 
     @Test
     void mapRow_shouldReturnMapped_whenInputIsResultSet() throws SQLException {
-        Student expected = new Student(1001, 722, "First", "Last");
-        Student actual = rowMapper.mapRow(resultSet, 99999);
+        Group expected = new Group(901, "Name");
+        Group actual = rowMapper.mapRow(resultSet, 11);
 
         assertEquals(expected, actual);
     }
