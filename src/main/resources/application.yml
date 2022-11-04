@@ -1,3 +1,7 @@
 spring:
   datasource:
-    initialization-mode: always
+    initialization-mode: never
+    url: jdbc:postgresql://localhost:5432/school
+    username: postgres
+    password: postgres
+
