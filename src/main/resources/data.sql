@@ -1,4 +1,4 @@
-INSERT INTO courses
+INSERT INTO courses (course_name, course_description)
 VALUES ('math', 'math_desc'),
        ('meth', 'meth_desc'),
        ('biology', 'biology_desc'),
