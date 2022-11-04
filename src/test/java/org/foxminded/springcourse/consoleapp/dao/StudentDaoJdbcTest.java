@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,6 +104,34 @@ class StudentDaoJdbcTest {
         int actualSize = studentDao.findAll().size();
 
         assertEquals(expectedSize, actualSize);
+    }
+
+    @Sql(statements = "INSERT INTO students VALUES (12, 10, 'Enzo', 'Ferrari')")
+    @Test
+    void findById_shouldReturnPresentOptional_whenCourseExists() {
+        Student expected = new Student(12, 10, "Enzo", "Ferrari");
+        Student actual = studentDao.findById(12).get();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void findById_shouldReturnEmptyOptional_whenCourseExists() {
+        Optional<Student> actual = studentDao.findById(1000);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Sql(statements = "INSERT INTO students VALUES (111, 11, 'Jonathan', 'Davis')")
+    @Test
+    void update_shouldUpdate_whenInputIsId() {
+        Student expected = new Student(111, 111, "Corey", "Taylor");
+
+        studentDao.update(expected);
+
+        String query = "SELECT * FROM students WHERE student_id = ?";
+        Student actual = jdbcTemplate.query(query, rowMapper, 111).get(0);
+
+        assertEquals(expected, actual);
     }
 
     @Sql("classpath:students_data.sql")
