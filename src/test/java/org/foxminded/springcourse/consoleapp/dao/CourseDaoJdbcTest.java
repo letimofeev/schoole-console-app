@@ -34,7 +34,7 @@ class CourseDaoJdbcTest {
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
             .withDatabaseName("school-test")
-            .withInitScript("create_courses_table.sql");
+            .withInitScript("courses_test_tables.sql");
 
     @BeforeAll
     static void setUp() {
