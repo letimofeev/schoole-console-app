@@ -56,7 +56,7 @@ class CourseDaoJdbcTest {
 
     @Sql("classpath:courses_data.sql")
     @Test
-    void findAll() {
+    void findAll_shouldReturnExpected_whenCoursesExist() {
         List<Course> expected = List.of(new Course(1, "math", "math_desc"),
                 new Course(2, "meth", "meth_desc"),
                 new Course(3, "informatics", "informatics_desc"),

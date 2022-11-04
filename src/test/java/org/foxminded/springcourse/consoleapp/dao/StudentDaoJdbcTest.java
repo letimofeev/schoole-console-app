@@ -82,7 +82,7 @@ class StudentDaoJdbcTest {
 
     @Sql("classpath:students_courses_data.sql")
     @Test
-    void findAllByCourseName_shouldReturnActual_whenStudentsExist() {
+    void findAllByCourseName_shouldReturnActualRowsNumber_whenStudentsExist() {
         int expectedSize = 3;
         int actualSize = studentDao.findAllByCourseName("course3").size();
 
@@ -98,7 +98,7 @@ class StudentDaoJdbcTest {
 
     @Sql("classpath:students_data.sql")
     @Test
-    void findAll_shouldReturnActual_whenStudentsExist() {
+    void findAll_shouldReturnActualRowsNumber_whenStudentsExist() {
         int expectedSize = 10;
         int actualSize = studentDao.findAll().size();
 
@@ -117,7 +117,7 @@ class StudentDaoJdbcTest {
     }
 
     @Test
-    void addStudentCourse() {
+    void addStudentCourse_shouldAddStudentToCourse_whenInputIsIds() {
         studentDao.addStudentCourse(4, 3);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 4 AND course_id = 3";
@@ -128,7 +128,7 @@ class StudentDaoJdbcTest {
 
     @Sql("classpath:students_courses_data.sql")
     @Test
-    void deleteStudentCourse() {
+    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsIds() {
         studentDao.deleteStudentCourse(1, 2);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 1 AND course_id = 2";
