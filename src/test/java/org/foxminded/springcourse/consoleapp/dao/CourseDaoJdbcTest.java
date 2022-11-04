@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,8 +18,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @Testcontainers
@@ -30,6 +32,11 @@ class CourseDaoJdbcTest {
 
     @Autowired
     private CourseDao courseDao;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    private final CourseRowMapper rowMapper = new CourseRowMapper();
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -54,20 +61,62 @@ class CourseDaoJdbcTest {
         container.stop();
     }
 
+    @Test
+    void save_shouldInjectId_whenStudentSaved() {
+        Course course = new Course("Name", "D");
+        courseDao.save(course);
+
+        int unexpectedId = 0;
+        int actualId = course.getCourseId();
+
+        assertNotEquals(unexpectedId, actualId);
+    }
+
     @Sql("classpath:courses_data.sql")
     @Test
-    void findAll_shouldReturnExpected_whenCoursesExist() {
-        List<Course> expected = List.of(new Course(1, "math", "math_desc"),
-                new Course(2, "meth", "meth_desc"),
-                new Course(3, "informatics", "informatics_desc"),
-                new Course(4, "computer_science", "computer_science_desc"),
-                new Course(5, "memelogy", "memelogy_desc"),
-                new Course(6, "religion", "religion_desc"),
-                new Course(7, "functional_analysis", "functional_analysis_desc"),
-                new Course(8, "machine_learning", "machine_learning_desc"));
+    void findAll_shouldReturnExpectedRowsNumber_whenCoursesExist() {
+        int expectedSize = 8;
+        int actualSize = courseDao.findAll().size();
 
-        List<Course> actual = courseDao.findAll();
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Sql(statements = "INSERT INTO courses VALUES (1000, 'Doggy', 'Ok')")
+    @Test
+    void findById_shouldReturnPresentOptional_whenCourseExists() {
+        Course expected = new Course(1000, "Doggy", "Ok");
+        Course actual = courseDao.findById(1000).get();
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void findById_shouldReturnEmptyOptional_whenCourseExists() {
+        Optional<Course> actual = courseDao.findById(1000);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Sql(statements = "INSERT INTO courses VALUES (1111, 'Kitten', 'Ko')")
+    @Test
+    void update_shouldUpdate_whenInputIsId() {
+        Course expected = new Course(1111, "Doggy", "Ok");
+
+        courseDao.update(expected);
+
+        String query = "SELECT * FROM courses WHERE course_id = ?";
+        Course actual = jdbcTemplate.query(query, rowMapper, 1111).get(0);
+
+        assertEquals(expected, actual);
+    }
+
+    @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
+    @Test
+    void deleteById_shouldDelete_whenInputIsId() {
+        courseDao.deleteById(1112);
+
+        String query = "SELECT * FROM courses WHERE course_id = ?";
+        List<Course> actual = jdbcTemplate.query(query, rowMapper, 1112);
+
+        assertTrue(actual.isEmpty());
     }
 }
