@@ -1,6 +1,7 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.model.Student;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class StudentDaoJdbc implements StudentDao {
@@ -19,6 +21,8 @@ public class StudentDaoJdbc implements StudentDao {
             "JOIN students_courses sc on students.student_id = sc.student_id\n" +
             "JOIN courses c on c.course_id = sc.course_id\n" +
             "WHERE c.course_name = ?";
+    public static final String FIND_BY_ID = "SELECT * FROM students WHERE student_id = ?";
+    public static final String UPDATE_BY_ID = "UPDATE students SET group_id = ?, first_name = ?, last_name = ? WHERE student_id = ?";
     public static final String DELETE_BY_ID = "DELETE FROM students WHERE student_id = ?";
     public static final String ADD_STUDENT_COURSE = "INSERT INTO students_courses (student_id, course_id) VALUES (?, ?)";
     public static final String DELETE_STUDENT_COURSE = "DELETE FROM students_courses WHERE student_id = ? AND course_id = ?";
@@ -46,14 +50,33 @@ public class StudentDaoJdbc implements StudentDao {
     }
 
     @Override
+    public List<Student> findAll() {
+        return jdbcTemplate.query(FIND_ALL, studentRowMapper);
+    }
+
+    @Override
     public List<Student> findAllByCourseName(String courseName) {
         return jdbcTemplate.query(FIND_ALL_BY_COURSE_NAME, studentRowMapper, courseName);
 
     }
 
     @Override
-    public List<Student> findAll() {
-        return jdbcTemplate.query(FIND_ALL, studentRowMapper);
+    public Optional<Student> findById(int id) {
+        try {
+            Student student = jdbcTemplate.queryForObject(FIND_BY_ID, studentRowMapper, id);
+            return Optional.ofNullable(student);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void update(Student student) {
+        int id = student.getStudentId();
+        int groupId = student.getGroupId();
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        jdbcTemplate.update(UPDATE_BY_ID, groupId, firstName, lastName, id);
     }
 
     @Override
