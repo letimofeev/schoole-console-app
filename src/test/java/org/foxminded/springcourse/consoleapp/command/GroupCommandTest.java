@@ -1,7 +1,7 @@
 package org.foxminded.springcourse.consoleapp.command;
 
-import org.foxminded.springcourse.consoleapp.dao.GroupDao;
 import org.foxminded.springcourse.consoleapp.model.Group;
+import org.foxminded.springcourse.consoleapp.service.GroupService;
 import org.foxminded.springcourse.consoleapp.view.GroupFormatter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class GroupCommandTest {
 
     @Mock
-    private GroupDao groupDao;
+    private GroupService groupService;
 
     @Mock
     private GroupFormatter groupFormatter;
@@ -35,8 +35,8 @@ class GroupCommandTest {
         List<Group> groups = List.of(new Group("group1"), new Group("group2"), new Group("group111"));
         List<Group> allGroups = List.of(new Group("all-"));
 
-        when(groupDao.findAllWithStudentCountLessThanEqual(1)).thenReturn(groups);
-        when(groupDao.findAll()).thenReturn(allGroups);
+        when(groupService.findAllWithStudentCountLessThanEqual(1)).thenReturn(groups);
+        when(groupService.findAll()).thenReturn(allGroups);
 
         when(groupFormatter.formatGroups(groups)).thenReturn("Formatted group1, group2, group111");
         when(groupFormatter.formatGroups(allGroups)).thenReturn("Formatted all groups");
