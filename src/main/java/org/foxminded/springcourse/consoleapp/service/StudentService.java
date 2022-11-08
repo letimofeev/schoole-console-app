@@ -1,23 +1,18 @@
-package org.foxminded.springcourse.consoleapp.dao;
+package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.model.Student;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface StudentDao {
+public interface StudentService {
 
     void save(Student student);
+
+    void deleteById(int id);
 
     List<Student> findAll();
 
     List<Student> findAllByCourseName(String courseName);
-
-    Optional<Student> findById(int id);
-
-    void update(Student student);
-
-    void deleteById(int id);
 
     void addStudentCourse(int studentId, int courseId);
 
