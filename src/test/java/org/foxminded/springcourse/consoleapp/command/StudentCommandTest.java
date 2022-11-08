@@ -1,7 +1,7 @@
 package org.foxminded.springcourse.consoleapp.command;
 
-import org.foxminded.springcourse.consoleapp.dao.StudentDao;
 import org.foxminded.springcourse.consoleapp.model.Student;
+import org.foxminded.springcourse.consoleapp.service.StudentService;
 import org.foxminded.springcourse.consoleapp.view.StudentFormatter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class StudentCommandTest {
 
     @Mock
-    private StudentDao studentDao;
+    private StudentService studentService;
 
     @Mock
     private StudentFormatter studentFormatter;
@@ -41,8 +41,8 @@ class StudentCommandTest {
         List<Student> allStudents = List.of(new Student(112, 222, "Oleg", "Nikitov"),
                 new Student(100, 222, "Nikita", "Olegov"));
 
-        when(studentDao.findAllByCourseName("course")).thenReturn(studentsByCourse);
-        when(studentDao.findAll()).thenReturn(allStudents);
+        when(studentService.findAllByCourseName("course")).thenReturn(studentsByCourse);
+        when(studentService.findAll()).thenReturn(allStudents);
 
         when(studentFormatter.formatStudents(studentsByCourse)).thenReturn("Formatted studentsByCourse by course name");
         when(studentFormatter.formatStudents(allStudents)).thenReturn("Formatted all students");
@@ -51,7 +51,7 @@ class StudentCommandTest {
             Student student = invocation.getArgument(0);
             student.setStudentId(1);
             return null;
-        }).when(studentDao).save(any());
+        }).when(studentService).save(any());
 
         when(studentFormatter.formatStudent(new Student(1, 10, "Name", "LastName"))).thenReturn("Student(1)");
     }

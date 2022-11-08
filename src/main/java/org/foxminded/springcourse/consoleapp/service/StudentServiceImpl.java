@@ -2,9 +2,11 @@ package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.dao.StudentDao;
 import org.foxminded.springcourse.consoleapp.model.Student;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class StudentServiceImpl implements StudentService {
 
     private final StudentDao studentDao;
