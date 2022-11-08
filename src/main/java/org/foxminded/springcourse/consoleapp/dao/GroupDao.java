@@ -11,7 +11,7 @@ public interface GroupDao {
 
     List<Group> findAll();
 
-    List<Group> findAllWithStudentCountLessThanEqual(int studentCount);
+    List<Group> findAllWithStudentCountLessThanEqual(int studentsCount);
 
     Optional<Group> findById(int id);
 

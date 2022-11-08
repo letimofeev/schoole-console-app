@@ -49,8 +49,8 @@ public class GroupDaoJdbc implements GroupDao {
     }
 
     @Override
-    public List<Group> findAllWithStudentCountLessThanEqual(int studentCount) {
-        return jdbcTemplate.query(FIND_ALL_WITH_LTE_STUDENTS, groupRowMapper, studentCount);
+    public List<Group> findAllWithStudentCountLessThanEqual(int studentsCount) {
+        return jdbcTemplate.query(FIND_ALL_WITH_LTE_STUDENTS, groupRowMapper, studentsCount);
     }
 
     @Override
