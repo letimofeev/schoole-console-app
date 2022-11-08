@@ -1,7 +1,7 @@
 package org.foxminded.springcourse.consoleapp.command;
 
-import org.foxminded.springcourse.consoleapp.dao.CourseDao;
 import org.foxminded.springcourse.consoleapp.model.Course;
+import org.foxminded.springcourse.consoleapp.service.CourseService;
 import org.foxminded.springcourse.consoleapp.view.CourseFormatter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class CourseCommandTest {
 
     @Mock
-    private CourseDao courseDao;
+    private CourseService courseService;
 
     @Mock
     private CourseFormatter courseFormatter;
@@ -34,7 +34,7 @@ class CourseCommandTest {
 
         List<Course> courses = List.of(new Course(10, "Name", "Desc"));
 
-        when(courseDao.findAll()).thenReturn(courses);
+        when(courseService.findAll()).thenReturn(courses);
 
         when(courseFormatter.formatCourses(courses)).thenReturn("Formatted courses");
     }
