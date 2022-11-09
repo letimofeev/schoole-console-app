@@ -9,3 +9,17 @@ spring:
     user: postgres
     password: postgres
 
+logging:
+  level:
+    root:
+      info
+    org:
+      foxminded:
+        debug
+    # if we want so set debug level in root and avoid RMI logging
+    javax:
+      management:
+        info
+    sun:
+      rmi:
+        info
