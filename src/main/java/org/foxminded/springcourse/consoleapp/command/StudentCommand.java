@@ -42,8 +42,6 @@ public class StudentCommand {
     public String addStudent(@ShellOption("--group-id") int groupId,
                              @ShellOption("--first-name") String firstName,
                              @ShellOption("--last-name") String lastName) {
-        log.debug("Entering add-student command with parameters: --group-id = {}, --first-name = {} --last-name = {}",
-                groupId, firstName, lastName);
         Student student = new Student(groupId, firstName, lastName);
         studentService.save(student);
         log.info("Saved student: id = {}, groupId = {}, firstName = {}, lastName = {}",
@@ -53,7 +51,6 @@ public class StudentCommand {
 
     @ShellMethod("Delete student by id")
     public String deleteStudentById(@ShellOption("--id") int id) {
-        log.debug("Entering delete-student-by-id command with parameters: --id = {}", id);
         studentService.deleteById(id);
         log.info("Student with id = {} deleted", id);
         return "Student deleted";
@@ -62,8 +59,6 @@ public class StudentCommand {
     @ShellMethod("Add student to a course")
     public String addStudentCourse(@ShellOption("--student-id") int studentId,
                                    @ShellOption("--course-id") int courseId) {
-        log.debug("Entering add-student-course command with parameters: --student-id = {}, --course-id = {}",
-                studentId, courseId);
         studentService.addStudentCourse(studentId, courseId);
         log.info("Student with id = {} added to the course with id = {}", studentId, courseId);
         return "Student added to the course";
@@ -72,8 +67,6 @@ public class StudentCommand {
     @ShellMethod("Delete student from a course")
     public String deleteStudentCourse(@ShellOption("--student-id") int studentId,
                                       @ShellOption("--course-id") int courseId) {
-        log.debug("Entering delete-student-course command with parameters: --student-id = {}, --course-id = {}",
-                studentId, courseId);
         studentService.deleteStudentCourse(studentId, courseId);
         log.info("Student with id = {} deleted from the course with id = {}", studentId, courseId);
         return "Student deleted from the course";

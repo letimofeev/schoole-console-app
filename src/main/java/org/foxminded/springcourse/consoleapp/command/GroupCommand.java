@@ -26,15 +26,12 @@ public class GroupCommand {
 
     @ShellMethod("Find all groups with number of students <= given")
     public String findAllGroupsWithStudentCountLessThanEqual(@ShellOption("--students-count") int studentsCount) {
-        log.debug("Entering find-all-groups-with-student-count-less-than-equal command with parameters: " +
-                "--students-count = {}", studentsCount);
         List<Group> groups = groupService.findAllWithStudentCountLessThanEqual(studentsCount);
         return groupFormatter.formatGroups(groups);
     }
 
     @ShellMethod("Find all groups")
     public String findAllGroups() {
-        log.debug("Entering find-all-groups command");
         List<Group> groups = groupService.findAll();
         return groupFormatter.formatGroups(groups);
     }

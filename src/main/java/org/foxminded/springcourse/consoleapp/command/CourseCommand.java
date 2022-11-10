@@ -25,7 +25,6 @@ public class CourseCommand {
 
     @ShellMethod("Find all courses")
     public String findAllCourses() {
-        log.debug("Entering find-all-courses command");
         List<Course> courses = courseService.findAll();
         return courseFormatter.formatCourses(courses);
     }
