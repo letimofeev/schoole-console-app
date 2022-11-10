@@ -1,6 +1,8 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.model.Group;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,6 +30,8 @@ public class GroupDaoJdbc implements GroupDao {
     private final RowMapper<Group> groupRowMapper = new GroupRowMapper();
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     public GroupDaoJdbc(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -41,6 +45,9 @@ public class GroupDaoJdbc implements GroupDao {
 
         Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
         group.setGroupId(id.intValue());
+
+        log.debug("Group saved in table 'groups', values: group_id = {}, group_name = {}",
+                group.getGroupId(), group.getGroupName());
     }
 
     @Override
@@ -59,6 +66,7 @@ public class GroupDaoJdbc implements GroupDao {
             Group group = jdbcTemplate.queryForObject(FIND_BY_ID, groupRowMapper, id);
             return Optional.ofNullable(group);
         } catch (EmptyResultDataAccessException e) {
+            log.warn("Group with id = {} not found in table 'groups'", id);
             return Optional.empty();
         }
     }
@@ -68,10 +76,14 @@ public class GroupDaoJdbc implements GroupDao {
         int id = group.getGroupId();
         String groupName = group.getGroupName();
         jdbcTemplate.update(UPDATE_BY_ID, groupName, id);
+
+        log.debug("Group with id = {} updated in table 'groups', new values: group_name = {}",
+                id, group.getGroupName());
     }
 
     @Override
     public void deleteById(int id) {
         jdbcTemplate.update(DELETE_BY_ID, id);
+        log.debug("Group with id = {} deleted from table 'groups'", id);
     }
 }

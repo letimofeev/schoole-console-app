@@ -44,7 +44,7 @@ public class CourseDaoJdbc implements CourseDao {
         Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
         course.setCourseId(id.intValue());
 
-        log.debug("Course saved in table 'courses'. Values: course_id = {}, course_name = {}, course_description = {}",
+        log.debug("Course saved in table 'courses', values: course_id = {}, course_name = {}, course_description = {}",
                 course.getCourseId(), course.getCourseName(), course.getCourseDescription());
     }
 
