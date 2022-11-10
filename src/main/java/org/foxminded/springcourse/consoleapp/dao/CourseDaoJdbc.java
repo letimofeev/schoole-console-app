@@ -1,6 +1,8 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.model.Course;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,6 +26,8 @@ public class CourseDaoJdbc implements CourseDao {
     private final RowMapper<Course> courseRowMapper = new CourseRowMapper();
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     public CourseDaoJdbc(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -39,6 +43,9 @@ public class CourseDaoJdbc implements CourseDao {
 
         Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
         course.setCourseId(id.intValue());
+
+        log.debug("Course saved in table 'courses'. Values: course_id = {}, course_name = {}, course_description = {}",
+                course.getCourseId(), course.getCourseName(), course.getCourseDescription());
     }
 
     @Override
@@ -52,6 +59,7 @@ public class CourseDaoJdbc implements CourseDao {
             Course course = jdbcTemplate.queryForObject(FIND_BY_ID, courseRowMapper, id);
             return Optional.ofNullable(course);
         } catch (EmptyResultDataAccessException e) {
+            log.warn("Course with id = {} not found in table 'courses'", id);
             return Optional.empty();
         }
     }
@@ -62,10 +70,14 @@ public class CourseDaoJdbc implements CourseDao {
         String courseName = course.getCourseName();
         String courseDescription = course.getCourseDescription();
         jdbcTemplate.update(UPDATE_BY_ID, courseName, courseDescription, id);
+
+        log.debug("Course with id = {} updated in table 'courses', new values: course_name = {}, " +
+                        "course_description = {}", id, courseName, courseDescription);
     }
 
     @Override
     public void deleteById(int id) {
         jdbcTemplate.update(DELETE_BY_ID, id);
+        log.debug("Course with id = {} deleted from table 'courses'", id);
     }
 }
