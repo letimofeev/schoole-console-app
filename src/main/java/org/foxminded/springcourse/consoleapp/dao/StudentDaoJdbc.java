@@ -1,6 +1,8 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
 import org.foxminded.springcourse.consoleapp.model.Student;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -31,6 +33,8 @@ public class StudentDaoJdbc implements StudentDao {
     private final RowMapper<Student> studentRowMapper = new StudentRowMapper();
     private final SimpleJdbcInsert simpleJdbcInsert;
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     public StudentDaoJdbc(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -47,6 +51,11 @@ public class StudentDaoJdbc implements StudentDao {
 
         Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
         student.setStudentId(id.intValue());
+
+        log.debug("Student saved in table 'students', values: student_id = {}, " +
+                        "group_id = {}, first_name = {}, last_name = {}",
+                student.getStudentId(), student.getGroupId(),
+                student.getFirstName(), student.getLastName());
     }
 
     @Override
@@ -66,6 +75,7 @@ public class StudentDaoJdbc implements StudentDao {
             Student student = jdbcTemplate.queryForObject(FIND_BY_ID, studentRowMapper, id);
             return Optional.ofNullable(student);
         } catch (EmptyResultDataAccessException e) {
+            log.warn("Student with id = {} not found in table 'students'", id);
             return Optional.empty();
         }
     }
@@ -77,20 +87,28 @@ public class StudentDaoJdbc implements StudentDao {
         String firstName = student.getFirstName();
         String lastName = student.getLastName();
         jdbcTemplate.update(UPDATE_BY_ID, groupId, firstName, lastName, id);
+
+        log.debug("Student with id = {} updated in table 'students', new values: group_id = {}, " +
+                "first_name = {}, last_name = {}", id, groupId, firstName, lastName);
     }
 
     @Override
     public void deleteById(int id) {
         jdbcTemplate.update(DELETE_BY_ID, id);
+        log.debug("Student with id = {} deleted from table 'students'", id);
     }
 
     @Override
     public void addStudentCourse(int studentId, int courseId) {
         jdbcTemplate.update(ADD_STUDENT_COURSE, studentId, courseId);
+        log.debug("Student with id = {} added to the course with id = {} in table 'students_courses'",
+                studentId, courseId);
     }
 
     @Override
     public void deleteStudentCourse(int studentId, int courseId) {
         jdbcTemplate.update(DELETE_STUDENT_COURSE, studentId, courseId);
+        log.debug("Student with id = {} deleted from the course with id = {} in table 'students_courses'",
+                studentId, courseId);
     }
 }

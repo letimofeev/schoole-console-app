@@ -72,7 +72,7 @@ public class CourseDaoJdbc implements CourseDao {
         jdbcTemplate.update(UPDATE_BY_ID, courseName, courseDescription, id);
 
         log.debug("Course with id = {} updated in table 'courses', new values: course_name = {}, " +
-                        "course_description = {}", id, courseName, courseDescription);
+                "course_description = {}", id, courseName, courseDescription);
     }
 
     @Override
