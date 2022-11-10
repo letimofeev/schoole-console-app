@@ -1,6 +1,7 @@
 package org.foxminded.springcourse.consoleapp.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -15,7 +16,7 @@ public class LoggingAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Around("org.foxminded.springcourse.consoleapp.aspect.Pointcuts.allMethods()")
-    public Object aroundAllMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object aroundAllMethodsLoggingAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         String shortClassName = methodSignature.getDeclaringType().getSimpleName();
         String fullMethodName = shortClassName + "." + methodSignature.getName();
@@ -25,5 +26,11 @@ public class LoggingAspect {
         long timeElapsed = System.currentTimeMillis() - startTimeMillis;
         log.debug("End of method {}; Time elapsed: {} ms", fullMethodName, timeElapsed);
         return targetMethodResult;
+    }
+
+    @AfterThrowing(pointcut = "org.foxminded.springcourse.consoleapp.aspect.Pointcuts.allServiceMethods()",
+            throwing = "exception")
+    public void afterThrowingAllServiceMethodsLoggingAdvice(Throwable exception) {
+        log.error("Exception during service method call, nested exception: {}", exception.toString());
     }
 }

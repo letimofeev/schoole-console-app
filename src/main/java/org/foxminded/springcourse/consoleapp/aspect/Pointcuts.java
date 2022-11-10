@@ -7,4 +7,8 @@ public class Pointcuts {
     @Pointcut("execution(* org.foxminded.springcourse.consoleapp.*.*.*(..))")
     public void allMethods() {
     }
+
+    @Pointcut("execution(* org.foxminded.springcourse.consoleapp.service.*.*(..))")
+    public void allServiceMethods() {
+    }
 }
