@@ -26,14 +26,12 @@ public class StudentCommand {
 
     @ShellMethod("Find all students")
     public String findAllStudents() {
-        log.debug("Entering find-all-students command");
         List<Student> students = studentService.findAll();
         return studentFormatter.formatStudents(students);
     }
 
     @ShellMethod("Find all students by course name")
     public String findAllStudentsByCourseName(@ShellOption("--name") String courseName) {
-        log.debug("Entering find-all-students-by-course-name command with parameters: --name = {}", courseName);
         List<Student> students = studentService.findAllByCourseName(courseName);
         return studentFormatter.formatStudents(students);
     }

@@ -19,11 +19,11 @@ public class LoggingAspect {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         String shortClassName = methodSignature.getDeclaringType().getSimpleName();
         String fullMethodName = shortClassName + "." + methodSignature.getName();
-        log.debug("[LoggingAspect] Begin of method: {}", fullMethodName);
+        log.debug("Begin of method: {}", fullMethodName);
         long startTimeMillis = System.currentTimeMillis();
         Object targetMethodResult = proceedingJoinPoint.proceed();
         long timeElapsed = System.currentTimeMillis() - startTimeMillis;
-        log.debug("[LoggingAspect] End of method {}; Time elapsed: {} ms", fullMethodName, timeElapsed);
+        log.debug("End of method {}; Time elapsed: {} ms", fullMethodName, timeElapsed);
         return targetMethodResult;
     }
 }
