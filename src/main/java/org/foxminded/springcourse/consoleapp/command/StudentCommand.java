@@ -26,47 +26,80 @@ public class StudentCommand {
 
     @ShellMethod("Find all students")
     public String findAllStudents() {
-        List<Student> students = studentService.findAll();
-        return studentFormatter.formatStudents(students);
+        try {
+            List<Student> students = studentService.findAll();
+            return studentFormatter.formatStudents(students);
+        } catch (Exception e) {
+            log.error("Exception during finding all students, nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Find all students by course name")
     public String findAllStudentsByCourseName(@ShellOption("--name") String courseName) {
-        List<Student> students = studentService.findAllByCourseName(courseName);
-        return studentFormatter.formatStudents(students);
+        try {
+            List<Student> students = studentService.findAllByCourseName(courseName);
+            return studentFormatter.formatStudents(students);
+        } catch (Exception e) {
+            log.error("Exception during finding all students by course name, " +
+                    "nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Add new student")
     public String addStudent(@ShellOption("--group-id") int groupId,
                              @ShellOption("--first-name") String firstName,
                              @ShellOption("--last-name") String lastName) {
-        Student student = new Student(groupId, firstName, lastName);
-        studentService.save(student);
-        log.info("Saved student: id = {}, groupId = {}, firstName = {}, lastName = {}",
-                student.getStudentId(), student.getGroupId(), student.getFirstName(), student.getLastName());
-        return studentFormatter.formatStudent(student);
+        try {
+            Student student = new Student(groupId, firstName, lastName);
+            studentService.save(student);
+            log.info("Saved student: id = {}, groupId = {}, firstName = {}, lastName = {}",
+                    student.getStudentId(), student.getGroupId(), student.getFirstName(), student.getLastName());
+            return studentFormatter.formatStudent(student);
+        } catch (Exception e) {
+            log.error("Exception during adding student, nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Delete student by id")
     public String deleteStudentById(@ShellOption("--id") int id) {
-        studentService.deleteById(id);
-        log.info("Student with id = {} deleted", id);
-        return "Student deleted";
+        try {
+            studentService.deleteById(id);
+            log.info("Student with id = {} deleted", id);
+            return "Student deleted";
+        } catch (Exception e) {
+            log.error("Exception during deleting student, nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Add student to a course")
     public String addStudentCourse(@ShellOption("--student-id") int studentId,
                                    @ShellOption("--course-id") int courseId) {
-        studentService.addStudentCourse(studentId, courseId);
-        log.info("Student with id = {} added to the course with id = {}", studentId, courseId);
-        return "Student added to the course";
+        try {
+            studentService.addStudentCourse(studentId, courseId);
+            log.info("Student with id = {} added to the course with id = {}", studentId, courseId);
+            return "Student added to the course";
+        } catch (Exception e) {
+            log.error("Exception during adding student to the course, " +
+                    "nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Delete student from a course")
     public String deleteStudentCourse(@ShellOption("--student-id") int studentId,
                                       @ShellOption("--course-id") int courseId) {
-        studentService.deleteStudentCourse(studentId, courseId);
-        log.info("Student with id = {} deleted from the course with id = {}", studentId, courseId);
-        return "Student deleted from the course";
+        try {
+            studentService.deleteStudentCourse(studentId, courseId);
+            log.info("Student with id = {} deleted from the course with id = {}", studentId, courseId);
+            return "Student deleted from the course";
+        } catch (Exception e) {
+            log.error("Exception during deleting student from the course, " +
+                    "nested exception: {}", e.toString());
+            throw e;
+        }
     }
 }

@@ -25,14 +25,25 @@ public class GroupCommand {
     }
 
     @ShellMethod("Find all groups with number of students <= given")
-    public String findAllGroupsWithStudentCountLessThanEqual(@ShellOption("--students-count") int studentsCount) {
-        List<Group> groups = groupService.findAllWithStudentCountLessThanEqual(studentsCount);
-        return groupFormatter.formatGroups(groups);
+    public String findAllGroupsWithStudentsCountLessThanEqual(@ShellOption("--students-count") int studentsCount) {
+        try {
+            List<Group> groups = groupService.findAllWithStudentCountLessThanEqual(studentsCount);
+            return groupFormatter.formatGroups(groups);
+        } catch (Exception e) {
+            log.error("Exception during finding groups with students count less or equal than," +
+                    " nested exception: {}", e.toString());
+            throw e;
+        }
     }
 
     @ShellMethod("Find all groups")
     public String findAllGroups() {
-        List<Group> groups = groupService.findAll();
-        return groupFormatter.formatGroups(groups);
+        try {
+            List<Group> groups = groupService.findAll();
+            return groupFormatter.formatGroups(groups);
+        } catch (Exception e) {
+            log.error("Exception during finding all groups, nested exception: {}", e.toString());
+            throw e;
+        }
     }
 }

@@ -25,7 +25,12 @@ public class CourseCommand {
 
     @ShellMethod("Find all courses")
     public String findAllCourses() {
-        List<Course> courses = courseService.findAll();
-        return courseFormatter.formatCourses(courses);
+        try {
+            List<Course> courses = courseService.findAll();
+            return courseFormatter.formatCourses(courses);
+        } catch (Exception e) {
+            log.error("Exception during finding all courses, nested exception: {}", e.toString());
+            throw e;
+        }
     }
 }

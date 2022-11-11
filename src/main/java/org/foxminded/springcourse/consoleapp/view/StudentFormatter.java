@@ -15,7 +15,7 @@ public class StudentFormatter {
 
     public String formatStudents(List<Student> students) {
         if (students.isEmpty()) {
-            log.warn("Empty students list passed to formatter");
+            log.info("Empty students list passed to formatter");
             return "No students found";
         }
         return students.stream()

@@ -15,7 +15,7 @@ public class CourseFormatter {
 
     public String formatCourses(List<Course> courses) {
         if (courses.isEmpty()) {
-            log.warn("Empty courses list passed to formatter");
+            log.info("Empty courses list passed to formatter");
             return "No courses found";
         }
         return courses.stream()

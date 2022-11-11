@@ -15,7 +15,7 @@ public class GroupFormatter {
 
     public String formatGroups(List<Group> groups) {
         if (groups.isEmpty()) {
-            log.warn("Empty courses list passed to formatter");
+            log.info("Empty courses list passed to formatter");
             return "No groups found";
         }
         return groups.stream()
