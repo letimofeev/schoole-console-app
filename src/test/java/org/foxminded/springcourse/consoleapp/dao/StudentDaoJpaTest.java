@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -18,8 +16,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,15 +28,13 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class StudentDaoJdbcTest {
+class StudentDaoJpaTest {
 
     @Autowired
     private StudentDao studentDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Student> rowMapper = new StudentRowMapper();
+    private EntityManager entityManager;
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -128,8 +124,7 @@ class StudentDaoJdbcTest {
 
         studentDao.update(expected);
 
-        String query = "SELECT * FROM students WHERE student_id = ?";
-        Student actual = jdbcTemplate.query(query, rowMapper, 111).get(0);
+        Student actual = entityManager.find(Student.class, 111);
 
         assertEquals(expected, actual);
     }
@@ -139,10 +134,9 @@ class StudentDaoJdbcTest {
     void deleteById_shouldDelete_whenStudentExists() {
         studentDao.deleteById(1);
 
-        String query = "SELECT * FROM students WHERE student_id = 1";
-        List<Student> allById1 = jdbcTemplate.query(query, rowMapper);
+        Student actual = entityManager.find(Student.class, 1);
 
-        assertTrue(allById1.isEmpty());
+        assertNull(actual);
     }
 
     @Test
@@ -150,7 +144,7 @@ class StudentDaoJdbcTest {
         studentDao.addStudentCourse(4, 3);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 4 AND course_id = 3";
-        List<Map<String, Object>> students = jdbcTemplate.queryForList(query);
+        List students = entityManager.createNativeQuery(query).getResultList();
 
         assertFalse(students.isEmpty());
     }
@@ -161,7 +155,7 @@ class StudentDaoJdbcTest {
         studentDao.deleteStudentCourse(1, 2);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 1 AND course_id = 2";
-        List<Map<String, Object>> students = jdbcTemplate.queryForList(query);
+        List students = entityManager.createNativeQuery(query).getResultList();
 
         assertTrue(students.isEmpty());
     }
