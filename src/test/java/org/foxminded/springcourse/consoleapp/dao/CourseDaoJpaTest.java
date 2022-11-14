@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,7 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,15 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class CourseDaoJdbcTest {
+class CourseDaoJpaTest {
 
     @Autowired
     private CourseDao courseDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final CourseRowMapper rowMapper = new CourseRowMapper();
+    private EntityManager entityManager;
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -103,8 +100,7 @@ class CourseDaoJdbcTest {
 
         courseDao.update(expected);
 
-        String query = "SELECT * FROM courses WHERE course_id = ?";
-        Course actual = jdbcTemplate.query(query, rowMapper, 1111).get(0);
+        Course actual = entityManager.find(Course.class, 1111);
 
         assertEquals(expected, actual);
     }
@@ -114,9 +110,8 @@ class CourseDaoJdbcTest {
     void deleteById_shouldDelete_whenInputIsId() {
         courseDao.deleteById(1112);
 
-        String query = "SELECT * FROM courses WHERE course_id = ?";
-        List<Course> actual = jdbcTemplate.query(query, rowMapper, 1112);
+        Course actual = entityManager.find(Course.class, 1112);
 
-        assertTrue(actual.isEmpty());
+        assertNull(actual);
     }
 }
