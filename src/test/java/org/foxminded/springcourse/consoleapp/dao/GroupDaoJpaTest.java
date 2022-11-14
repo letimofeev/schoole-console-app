@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,7 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,15 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class GroupDaoJdbcTest {
+class GroupDaoJpaTest {
 
     @Autowired
     private GroupDao groupDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final GroupRowMapper rowMapper = new GroupRowMapper();
+    private EntityManager entityManager;
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -112,8 +109,7 @@ class GroupDaoJdbcTest {
 
         groupDao.update(expected);
 
-        String query = "SELECT * FROM groups WHERE group_id = ?";
-        Group actual = jdbcTemplate.query(query, rowMapper, 1002).get(0);
+        Group actual = entityManager.find(Group.class, 1002);
 
         assertEquals(expected, actual);
     }
@@ -123,9 +119,8 @@ class GroupDaoJdbcTest {
     void deleteById_shouldDelete_whenInputIsId() {
         groupDao.deleteById(11133);
 
-        String query = "SELECT * FROM groups WHERE group_id = ?";
-        List<Group> actual = jdbcTemplate.query(query, rowMapper, 11133);
+        Group actual = entityManager.find(Group.class, 11133);
 
-        assertTrue(actual.isEmpty());
+        assertNull(actual);
     }
 }

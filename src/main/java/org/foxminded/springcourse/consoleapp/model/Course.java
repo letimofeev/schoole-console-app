@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -34,6 +35,26 @@ public class Course {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        if (courseId != course.courseId) return false;
+        if (!Objects.equals(courseName, course.courseName)) return false;
+        return Objects.equals(courseDescription, course.courseDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = courseId;
+        result = 31 * result + (courseName != null ? courseName.hashCode() : 0);
+        result = 31 * result + (courseDescription != null ? courseDescription.hashCode() : 0);
+        return result;
     }
 
     @Override
