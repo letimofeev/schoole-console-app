@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class CourseDaoJpaTest {
+class CourseRepositoryTest {
 
     @Autowired
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -61,7 +61,7 @@ class CourseDaoJpaTest {
     @Test
     void save_shouldInjectId_whenStudentSaved() {
         Course course = new Course("Name", "D");
-        courseDao.save(course);
+        courseRepository.save(course);
 
         int unexpectedId = 0;
         int actualId = course.getCourseId();
@@ -73,40 +73,25 @@ class CourseDaoJpaTest {
     @Test
     void findAll_shouldReturnExpectedRowsNumber_whenCoursesExist() {
         int expectedSize = 8;
-        int actualSize = courseDao.findAll().size();
+        int actualSize = courseRepository.findAll().size();
 
         assertEquals(expectedSize, actualSize);
     }
 
     @Sql(statements = "INSERT INTO courses VALUES (1000, 'Doggy', 'Ok')")
     @Test
-    void find_shouldReturnPresentOptional_whenCourseExists() {
+    void findById_shouldReturnPresentOptional_whenCourseExists() {
         Course expected = new Course(1000, "Doggy", "Ok");
-        Course actual = courseDao.find(expected).get();
+        Course actual = courseRepository.findById(1000).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
-        Course course = new Course();
-        course.setCourseId(100);
-
-        Optional<Course> actual = courseDao.find(course);
+    void findById_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Optional<Course> actual = courseRepository.findById(100);
 
         assertTrue(actual.isEmpty());
-    }
-
-    @Sql(statements = "INSERT INTO courses VALUES (1111, 'Kitten', 'Ko')")
-    @Test
-    void update_shouldUpdate_whenInputIsCourse() {
-        Course expected = new Course(1111, "Doggy", "Ok");
-
-        courseDao.update(expected);
-
-        Course actual = entityManager.find(Course.class, 1111);
-
-        assertEquals(expected, actual);
     }
 
     @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
@@ -114,7 +99,7 @@ class CourseDaoJpaTest {
     void delete_shouldDelete_whenInputIsCourse() {
         Course course = new Course();
         course.setCourseId(1112);
-        courseDao.delete(course);
+        courseRepository.delete(course);
 
         Course actual = entityManager.find(Course.class, 1112);
 
