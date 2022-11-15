@@ -50,10 +50,11 @@ public class GroupDaoJpa implements GroupDao {
     }
 
     @Override
-    public Optional<Group> findById(int id) {
-        Group group = entityManager.find(Group.class, id);
+    public Optional<Group> find(Group group) {
+        int groupId = group.getGroupId();
+        group = entityManager.find(Group.class, groupId);
         if (group == null) {
-            log.warn("Group with id = {} not found in table 'groups'", id);
+            log.warn("Group with id = {} not found in table 'groups'", groupId);
         }
         return Optional.ofNullable(group);
     }

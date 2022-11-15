@@ -89,22 +89,26 @@ class GroupDaoJpaTest {
 
     @Sql(statements = "INSERT INTO groups VALUES (1001, 'Bugatti')")
     @Test
-    void findById_shouldReturnPresentOptional_whenCourseExists() {
+    void find_shouldReturnPresentOptional_whenCourseExists() {
         Group expected = new Group(1001, "Bugatti");
-        Group actual = groupDao.findById(1001).get();
+        Group actual = groupDao.find(expected).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void findById_shouldReturnEmptyOptional_whenCourseExists() {
-        Optional<Group> actual = groupDao.findById(1000);
+    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Group group = new Group();
+        group.setGroupId(1000);
+
+        Optional<Group> actual = groupDao.find(group);
+
         assertTrue(actual.isEmpty());
     }
 
     @Sql(statements = "INSERT INTO groups VALUES (1002, 'Ducati')")
     @Test
-    void update_shouldUpdate_whenInputIsId() {
+    void update_shouldUpdate_whenInputIsGroup() {
         Group expected = new Group(1002, "Bugatti");
 
         groupDao.update(expected);
@@ -116,7 +120,7 @@ class GroupDaoJpaTest {
 
     @Sql(statements = "INSERT INTO groups VALUES (11133, 'Ferrari')")
     @Test
-    void deleteById_shouldDelete_whenInputIsId() {
+    void delete_shouldDelete_whenInputIsGroup() {
         Group group = new Group();
         group.setGroupId(11133);
 
