@@ -80,22 +80,26 @@ class CourseDaoJpaTest {
 
     @Sql(statements = "INSERT INTO courses VALUES (1000, 'Doggy', 'Ok')")
     @Test
-    void findById_shouldReturnPresentOptional_whenCourseExists() {
+    void find_shouldReturnPresentOptional_whenCourseExists() {
         Course expected = new Course(1000, "Doggy", "Ok");
-        Course actual = courseDao.findById(1000).get();
+        Course actual = courseDao.find(expected).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void findById_shouldReturnEmptyOptional_whenCourseExists() {
-        Optional<Course> actual = courseDao.findById(1000);
+    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Course course = new Course();
+        course.setCourseId(100);
+
+        Optional<Course> actual = courseDao.find(course);
+
         assertTrue(actual.isEmpty());
     }
 
     @Sql(statements = "INSERT INTO courses VALUES (1111, 'Kitten', 'Ko')")
     @Test
-    void update_shouldUpdate_whenInputIsId() {
+    void update_shouldUpdate_whenInputIsCourse() {
         Course expected = new Course(1111, "Doggy", "Ok");
 
         courseDao.update(expected);
@@ -107,7 +111,7 @@ class CourseDaoJpaTest {
 
     @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
     @Test
-    void delete_shouldDelete_whenInputIsId() {
+    void delete_shouldDelete_whenInputIsCourse() {
         Course course = new Course();
         course.setCourseId(1112);
         courseDao.delete(course);

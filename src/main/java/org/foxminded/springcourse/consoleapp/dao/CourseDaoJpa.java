@@ -38,10 +38,11 @@ public class CourseDaoJpa implements CourseDao {
     }
 
     @Override
-    public Optional<Course> findById(int id) {
-        Course course = entityManager.find(Course.class, id);
+    public Optional<Course> find(Course course) {
+        int courseId = course.getCourseId();
+        course = entityManager.find(Course.class, courseId);
         if (course == null) {
-            log.warn("Course with id = {} not found in table 'courses'", id);
+            log.warn("Course with id = {} not found in table 'courses'", courseId);
         }
         return Optional.ofNullable(course);
     }
