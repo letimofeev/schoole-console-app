@@ -1,13 +1,12 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -18,8 +17,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,15 +29,13 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class StudentDaoJdbcTest {
+class StudentDaoJpaTest {
 
     @Autowired
     private StudentDao studentDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Student> rowMapper = new StudentRowMapper();
+    private EntityManager entityManager;
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -108,60 +105,75 @@ class StudentDaoJdbcTest {
 
     @Sql(statements = "INSERT INTO students VALUES (12, 10, 'Enzo', 'Ferrari')")
     @Test
-    void findById_shouldReturnPresentOptional_whenCourseExists() {
+    void find_shouldReturnPresentOptional_whenStudentExists() {
         Student expected = new Student(12, 10, "Enzo", "Ferrari");
-        Student actual = studentDao.findById(12).get();
+        Student actual = studentDao.find(expected).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void findById_shouldReturnEmptyOptional_whenCourseExists() {
-        Optional<Student> actual = studentDao.findById(1000);
+    void find_shouldReturnEmptyOptional_whenStudentNotExists() {
+        Student student = new Student();
+        student.setStudentId(1000);
+
+        Optional<Student> actual = studentDao.find(student);
+
         assertTrue(actual.isEmpty());
     }
 
     @Sql(statements = "INSERT INTO students VALUES (111, 11, 'Jonathan', 'Davis')")
     @Test
-    void update_shouldUpdate_whenInputIsId() {
+    void update_shouldUpdate_whenInputIsStudent() {
         Student expected = new Student(111, 111, "Corey", "Taylor");
 
         studentDao.update(expected);
 
-        String query = "SELECT * FROM students WHERE student_id = ?";
-        Student actual = jdbcTemplate.query(query, rowMapper, 111).get(0);
+        Student actual = entityManager.find(Student.class, 111);
 
         assertEquals(expected, actual);
     }
 
     @Sql("classpath:students_data.sql")
     @Test
-    void deleteById_shouldDelete_whenStudentExists() {
-        studentDao.deleteById(1);
+    void delete_shouldDelete_whenStudentExists() {
+        Student student = new Student();
+        student.setStudentId(1);
 
-        String query = "SELECT * FROM students WHERE student_id = 1";
-        List<Student> allById1 = jdbcTemplate.query(query, rowMapper);
+        studentDao.delete(student);
 
-        assertTrue(allById1.isEmpty());
+        Student actual = entityManager.find(Student.class, 1);
+
+        assertNull(actual);
     }
 
     @Test
-    void addStudentCourse_shouldAddStudentToCourse_whenInputIsIds() {
-        studentDao.addStudentCourse(4, 3);
+    void addStudentCourse_shouldAddStudentToCourse_whenInputIsStudentAndCourse() {
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(4);
+        course.setCourseId(3);
+
+        studentDao.addStudentCourse(student, course);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 4 AND course_id = 3";
-        List<Map<String, Object>> students = jdbcTemplate.queryForList(query);
+        List students = entityManager.createNativeQuery(query).getResultList();
 
         assertFalse(students.isEmpty());
     }
 
     @Sql("classpath:students_courses_data.sql")
     @Test
-    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsIds() {
-        studentDao.deleteStudentCourse(1, 2);
+    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsStudentAndCourse() {
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(1);
+        course.setCourseId(2);
+
+        studentDao.deleteStudentCourse(student, course);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 1 AND course_id = 2";
-        List<Map<String, Object>> students = jdbcTemplate.queryForList(query);
+        List students = entityManager.createNativeQuery(query).getResultList();
 
         assertTrue(students.isEmpty());
     }

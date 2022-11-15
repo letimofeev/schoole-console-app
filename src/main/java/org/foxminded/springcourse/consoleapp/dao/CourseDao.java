@@ -11,9 +11,9 @@ public interface CourseDao {
 
      List<Course> findAll();
 
-     Optional<Course> findById(int id);
+     Optional<Course> find(Course course);
 
      void update(Course course);
 
-     void deleteById(int id);
+     void delete(Course course);
 }

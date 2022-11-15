@@ -45,7 +45,7 @@ class GroupCommandTest {
     @Test
     void findAllGroupsWithStudentCountLessThanEqual_shouldReturnFormattedGroups_whenInputIsId() {
         String expected = "Formatted group1, group2, group111";
-        String actual = command.findAllGroupsWithStudentCountLessThanEqual(1);
+        String actual = command.findAllGroupsWithStudentsCountLessThanEqual(1);
 
         assertEquals(expected, actual);
     }

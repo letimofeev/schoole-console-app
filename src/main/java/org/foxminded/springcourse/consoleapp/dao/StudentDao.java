@@ -1,5 +1,6 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 
 import java.util.List;
@@ -13,13 +14,13 @@ public interface StudentDao {
 
     List<Student> findAllByCourseName(String courseName);
 
-    Optional<Student> findById(int id);
+    Optional<Student> find(Student student);
 
     void update(Student student);
 
-    void deleteById(int id);
+    void delete(Student student);
 
-    void addStudentCourse(int studentId, int courseId);
+    void addStudentCourse(Student student, Course course);
 
-    void deleteStudentCourse(int studentId, int courseId);
+    void deleteStudentCourse(Student student, Course course);
 }

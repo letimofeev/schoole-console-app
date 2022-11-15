@@ -1,6 +1,7 @@
 package org.foxminded.springcourse.consoleapp.service;
 
 import org.foxminded.springcourse.consoleapp.dao.StudentDao;
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,22 +86,35 @@ class StudentServiceImplTest {
 
     @Test
     void deleteStudentById_shouldInvokeDaoDeleteByIdMethod_whenInputIsId() {
-        studentService.deleteById(1000);
+        Student student = new Student();
+        student.setStudentId(1000);
 
-        verify(studentDao, times(1)).deleteById(1000);
+        studentService.delete(student);
+
+        verify(studentDao, times(1)).delete(student);
     }
 
     @Test
     void addStudentCourse_shouldInvokeDaoMethod_whenInputIsIds() {
-        studentService.addStudentCourse(1000, 1001);
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(1000);
+        course.setCourseId(1001);
 
-        verify(studentDao, times(1)).addStudentCourse(1000, 1001);
+        studentService.addStudentCourse(student, course);
+
+        verify(studentDao, times(1)).addStudentCourse(student, course);
     }
 
     @Test
     void deleteStudentCourse_shouldInvokeDaoMethod_whenInputIsIds() {
-        studentService.deleteStudentCourse(1, 2);
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(1);
+        course.setCourseId(2);
 
-        verify(studentDao, times(1)).deleteStudentCourse(1, 2);
+        studentService.deleteStudentCourse(student, course);
+
+        verify(studentDao, times(1)).deleteStudentCourse(student, course);
     }
 }

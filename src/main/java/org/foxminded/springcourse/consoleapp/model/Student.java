@@ -3,13 +3,27 @@ package org.foxminded.springcourse.consoleapp.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.Objects;
+
 @Getter
 @Setter
+@Entity
+@Table(name = "students")
 public class Student {
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int studentId;
+
+    @Column
     private int groupId;
+
+    @Column
     private String firstName;
+
+    @Column
     private String lastName;
 
     public Student() {
@@ -36,13 +50,17 @@ public class Student {
         Student student = (Student) o;
 
         if (studentId != student.studentId) return false;
-        return groupId == student.groupId;
+        if (groupId != student.groupId) return false;
+        if (!Objects.equals(firstName, student.firstName)) return false;
+        return Objects.equals(lastName, student.lastName);
     }
 
     @Override
     public int hashCode() {
         int result = studentId;
         result = 31 * result + groupId;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
     }
 

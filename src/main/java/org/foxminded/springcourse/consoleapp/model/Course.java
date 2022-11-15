@@ -3,16 +3,24 @@ package org.foxminded.springcourse.consoleapp.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "courses")
 public class Course {
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int courseId;
 
+    @Column
     private String courseName;
 
+    @Column
     private String courseDescription;
 
     public Course() {

@@ -22,17 +22,18 @@
     <maven.compiler.target>11</maven.compiler.target>
     <apachecommons.version>3.8.1</apachecommons.version>
     <testcontainers.version>1.17.4</testcontainers.version>
+    <springshell.version>2.0.1.RELEASE</springshell.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.shell</groupId>
       <artifactId>spring-shell-starter</artifactId>
-      <version>2.0.1.RELEASE</version>
+      <version>${springshell.version}</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>

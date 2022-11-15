@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -17,7 +16,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,15 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class CourseDaoJdbcTest {
+class CourseDaoJpaTest {
 
     @Autowired
     private CourseDao courseDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final CourseRowMapper rowMapper = new CourseRowMapper();
+    private EntityManager entityManager;
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
@@ -83,40 +80,44 @@ class CourseDaoJdbcTest {
 
     @Sql(statements = "INSERT INTO courses VALUES (1000, 'Doggy', 'Ok')")
     @Test
-    void findById_shouldReturnPresentOptional_whenCourseExists() {
+    void find_shouldReturnPresentOptional_whenCourseExists() {
         Course expected = new Course(1000, "Doggy", "Ok");
-        Course actual = courseDao.findById(1000).get();
+        Course actual = courseDao.find(expected).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void findById_shouldReturnEmptyOptional_whenCourseExists() {
-        Optional<Course> actual = courseDao.findById(1000);
+    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Course course = new Course();
+        course.setCourseId(100);
+
+        Optional<Course> actual = courseDao.find(course);
+
         assertTrue(actual.isEmpty());
     }
 
     @Sql(statements = "INSERT INTO courses VALUES (1111, 'Kitten', 'Ko')")
     @Test
-    void update_shouldUpdate_whenInputIsId() {
+    void update_shouldUpdate_whenInputIsCourse() {
         Course expected = new Course(1111, "Doggy", "Ok");
 
         courseDao.update(expected);
 
-        String query = "SELECT * FROM courses WHERE course_id = ?";
-        Course actual = jdbcTemplate.query(query, rowMapper, 1111).get(0);
+        Course actual = entityManager.find(Course.class, 1111);
 
         assertEquals(expected, actual);
     }
 
     @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
     @Test
-    void deleteById_shouldDelete_whenInputIsId() {
-        courseDao.deleteById(1112);
+    void delete_shouldDelete_whenInputIsCourse() {
+        Course course = new Course();
+        course.setCourseId(1112);
+        courseDao.delete(course);
 
-        String query = "SELECT * FROM courses WHERE course_id = ?";
-        List<Course> actual = jdbcTemplate.query(query, rowMapper, 1112);
+        Course actual = entityManager.find(Course.class, 1112);
 
-        assertTrue(actual.isEmpty());
+        assertNull(actual);
     }
 }

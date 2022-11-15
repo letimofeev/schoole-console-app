@@ -3,13 +3,21 @@ package org.foxminded.springcourse.consoleapp.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int groupId;
+
+    @Column
     private String groupName;
 
     public Group() {

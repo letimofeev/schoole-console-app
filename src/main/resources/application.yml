@@ -9,3 +9,16 @@ spring:
     user: postgres
     password: postgres
 
+logging:
+  level:
+    root:
+      debug
+    org:
+      foxminded:
+        debug
+    javax:
+      management:
+        info
+    sun:
+      rmi:
+        info

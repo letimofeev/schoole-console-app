@@ -13,9 +13,9 @@ public interface GroupDao {
 
     List<Group> findAllWithStudentCountLessThanEqual(int studentsCount);
 
-    Optional<Group> findById(int id);
+    Optional<Group> find(Group group);
 
     void update(Group group);
 
-    void deleteById(int id);
+    void delete(Group group);
 }
