@@ -1,7 +1,6 @@
 package org.foxminded.springcourse.consoleapp.service;
 
-import org.foxminded.springcourse.consoleapp.dao.StudentDao;
-import org.foxminded.springcourse.consoleapp.model.Course;
+import org.foxminded.springcourse.consoleapp.dao.StudentRepository;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,7 +21,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class StudentServiceImplTest {
 
     @Mock
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @InjectMocks
     private StudentServiceImpl studentService;
@@ -38,19 +37,19 @@ class StudentServiceImplTest {
         List<Student> allStudents = List.of(new Student(112, 222, "Oleg", "Nikitov"),
                 new Student(100, 222, "Nikita", "Olegov"));
 
-        when(studentDao.findAllByCourseName("course")).thenReturn(studentsByCourse);
-        when(studentDao.findAll()).thenReturn(allStudents);
+        when(studentRepository.findAllByCourseName("course")).thenReturn(studentsByCourse);
+        when(studentRepository.findAll()).thenReturn(allStudents);
 
         doAnswer(invocation -> {
             Student student = invocation.getArgument(0);
             student.setStudentId(1);
             return null;
-        }).when(studentDao).save(any());
+        }).when(studentRepository).save(any());
     }
 
     @AfterEach
     void tearDown() {
-        clearInvocations(studentDao);
+        clearInvocations(studentRepository);
     }
 
     @Test
@@ -86,35 +85,22 @@ class StudentServiceImplTest {
 
     @Test
     void deleteStudentById_shouldInvokeDaoDeleteByIdMethod_whenInputIsId() {
-        Student student = new Student();
-        student.setStudentId(1000);
+        studentService.deleteById(1000);
 
-        studentService.delete(student);
-
-        verify(studentDao, times(1)).delete(student);
+        verify(studentRepository, times(1)).deleteById(1000);
     }
 
     @Test
     void addStudentCourse_shouldInvokeDaoMethod_whenInputIsIds() {
-        Student student = new Student();
-        Course course = new Course();
-        student.setStudentId(1000);
-        course.setCourseId(1001);
+        studentService.addStudentCourse(1000, 1001);
 
-        studentService.addStudentCourse(student, course);
-
-        verify(studentDao, times(1)).addStudentCourse(student, course);
+        verify(studentRepository, times(1)).addStudentCourse(1000, 1001);
     }
 
     @Test
     void deleteStudentCourse_shouldInvokeDaoMethod_whenInputIsIds() {
-        Student student = new Student();
-        Course course = new Course();
-        student.setStudentId(1);
-        course.setCourseId(2);
+        studentService.deleteStudentCourse(1, 2);
 
-        studentService.deleteStudentCourse(student, course);
-
-        verify(studentDao, times(1)).deleteStudentCourse(student, course);
+        verify(studentRepository, times(1)).deleteStudentCourse(1, 2);
     }
 }

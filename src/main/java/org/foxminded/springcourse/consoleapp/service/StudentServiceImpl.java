@@ -1,50 +1,47 @@
 package org.foxminded.springcourse.consoleapp.service;
 
-import org.foxminded.springcourse.consoleapp.dao.StudentDao;
-import org.foxminded.springcourse.consoleapp.model.Course;
+import org.foxminded.springcourse.consoleapp.dao.StudentRepository;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentDao studentDao;
+    private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentDao studentDao) {
-        this.studentDao = studentDao;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     @Override
     public void save(Student student) {
-        studentDao.save(student);
+        studentRepository.save(student);
     }
 
     @Override
-    public void delete(Student student) {
-        studentDao.delete(student);
+    public void deleteById(int id) {
+        studentRepository.deleteById(id);
     }
 
     @Override
     public List<Student> findAll() {
-        return studentDao.findAll();
+        return studentRepository.findAll();
     }
 
     @Override
     public List<Student> findAllByCourseName(String courseName) {
-        return studentDao.findAllByCourseName(courseName);
+        return studentRepository.findAllByCourseName(courseName);
     }
 
     @Override
-    public void addStudentCourse(Student student, Course course) {
-        studentDao.addStudentCourse(student, course);
+    public void addStudentCourse(int studentId, int courseId) {
+        studentRepository.addStudentCourse(studentId, courseId);
     }
 
     @Override
-    public void deleteStudentCourse(Student student, Course course) {
-        studentDao.deleteStudentCourse(student, course);
+    public void deleteStudentCourse(int studentId, int courseId) {
+        studentRepository.deleteStudentCourse(studentId, courseId);
     }
 }
