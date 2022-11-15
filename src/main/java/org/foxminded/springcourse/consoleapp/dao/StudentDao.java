@@ -14,7 +14,7 @@ public interface StudentDao {
 
     List<Student> findAllByCourseName(String courseName);
 
-    Optional<Student> findById(int id);
+    Optional<Student> find(Student student);
 
     void update(Student student);
 

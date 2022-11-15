@@ -56,10 +56,11 @@ public class StudentDaoJpa implements StudentDao {
     }
 
     @Override
-    public Optional<Student> findById(int id) {
-        Student student = entityManager.find(Student.class, id);
+    public Optional<Student> find(Student student) {
+        int studentId = student.getStudentId();
+        student = entityManager.find(Student.class, studentId);
         if (student == null) {
-            log.warn("Student with id = {} not found in table 'students'", id);
+            log.warn("Student with id = {} not found in table 'students'", studentId);
         }
         return Optional.ofNullable(student);
     }

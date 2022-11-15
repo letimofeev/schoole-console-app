@@ -105,22 +105,26 @@ class StudentDaoJpaTest {
 
     @Sql(statements = "INSERT INTO students VALUES (12, 10, 'Enzo', 'Ferrari')")
     @Test
-    void findById_shouldReturnPresentOptional_whenCourseExists() {
+    void find_shouldReturnPresentOptional_whenStudentExists() {
         Student expected = new Student(12, 10, "Enzo", "Ferrari");
-        Student actual = studentDao.findById(12).get();
+        Student actual = studentDao.find(expected).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void findById_shouldReturnEmptyOptional_whenCourseExists() {
-        Optional<Student> actual = studentDao.findById(1000);
+    void find_shouldReturnEmptyOptional_whenStudentNotExists() {
+        Student student = new Student();
+        student.setStudentId(1000);
+
+        Optional<Student> actual = studentDao.find(student);
+
         assertTrue(actual.isEmpty());
     }
 
     @Sql(statements = "INSERT INTO students VALUES (111, 11, 'Jonathan', 'Davis')")
     @Test
-    void update_shouldUpdate_whenInputIsId() {
+    void update_shouldUpdate_whenInputIsStudent() {
         Student expected = new Student(111, 111, "Corey", "Taylor");
 
         studentDao.update(expected);
@@ -132,7 +136,7 @@ class StudentDaoJpaTest {
 
     @Sql("classpath:students_data.sql")
     @Test
-    void deleteById_shouldDelete_whenStudentExists() {
+    void delete_shouldDelete_whenStudentExists() {
         Student student = new Student();
         student.setStudentId(1);
 
