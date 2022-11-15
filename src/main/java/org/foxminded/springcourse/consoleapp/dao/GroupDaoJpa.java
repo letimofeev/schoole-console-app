@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,6 @@ public class GroupDaoJpa implements GroupDao {
             "JOIN Student s on g.groupId = s.groupId\n" +
             "GROUP BY g.groupId, g.groupName\n" +
             "HAVING count(*) <= :studentsCount";
-    public static final String DELETE_BY_ID = "DELETE FROM Group WHERE groupId = :groupId";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -69,11 +67,11 @@ public class GroupDaoJpa implements GroupDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Query query = entityManager.createQuery(DELETE_BY_ID);
-        query.setParameter("groupId", id);
-        query.executeUpdate();
-
-        log.debug("Group with id = {} deleted from table 'groups'", id);
+    public void delete(Group group) {
+        group = entityManager.find(Group.class, group.getGroupId());
+        if (group != null) {
+            entityManager.remove(group);
+            log.debug("Group with id = {} deleted from table 'groups'", group.getGroupId());
+        }
     }
 }

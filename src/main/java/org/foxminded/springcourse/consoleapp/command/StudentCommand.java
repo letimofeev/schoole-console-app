@@ -1,5 +1,6 @@
 package org.foxminded.springcourse.consoleapp.command;
 
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.foxminded.springcourse.consoleapp.service.StudentService;
 import org.foxminded.springcourse.consoleapp.view.StudentFormatter;
@@ -66,7 +67,9 @@ public class StudentCommand {
     @ShellMethod("Delete student by id")
     public String deleteStudentById(@ShellOption("--id") int id) {
         try {
-            studentService.deleteById(id);
+            Student student = new Student();
+            student.setStudentId(id);
+            studentService.delete(student);
             log.info("Student with id = {} deleted", id);
             return "Student deleted";
         } catch (Exception e) {
@@ -79,7 +82,11 @@ public class StudentCommand {
     public String addStudentCourse(@ShellOption("--student-id") int studentId,
                                    @ShellOption("--course-id") int courseId) {
         try {
-            studentService.addStudentCourse(studentId, courseId);
+            Student student = new Student();
+            Course course = new Course();
+            student.setStudentId(studentId);
+            course.setCourseId(courseId);
+            studentService.addStudentCourse(student, course);
             log.info("Student with id = {} added to the course with id = {}", studentId, courseId);
             return "Student added to the course";
         } catch (Exception e) {
@@ -93,7 +100,11 @@ public class StudentCommand {
     public String deleteStudentCourse(@ShellOption("--student-id") int studentId,
                                       @ShellOption("--course-id") int courseId) {
         try {
-            studentService.deleteStudentCourse(studentId, courseId);
+            Student student = new Student();
+            Course course = new Course();
+            student.setStudentId(studentId);
+            course.setCourseId(courseId);
+            studentService.deleteStudentCourse(student, course);
             log.info("Student with id = {} deleted from the course with id = {}", studentId, courseId);
             return "Student deleted from the course";
         } catch (Exception e) {

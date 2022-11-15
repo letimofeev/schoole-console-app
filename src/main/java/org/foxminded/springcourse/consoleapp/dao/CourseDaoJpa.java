@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
 public class CourseDaoJpa implements CourseDao {
 
     public static final String FIND_ALL = "FROM Course";
-    public static final String DELETE_BY_ID = "DELETE FROM Course WHERE courseId = :courseId";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -58,11 +56,11 @@ public class CourseDaoJpa implements CourseDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Query query = entityManager.createQuery(DELETE_BY_ID);
-        query.setParameter("courseId", id);
-        query.executeUpdate();
-
-        log.debug("Course with id = {} deleted from table 'courses'", id);
+    public void delete(Course course) {
+        course = entityManager.find(Course.class, course.getCourseId());
+        if (course != null) {
+            entityManager.remove(course);
+            log.debug("Course with id = {} deleted from table 'courses'", course.getCourseId());
+        }
     }
 }

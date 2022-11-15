@@ -107,8 +107,10 @@ class CourseDaoJpaTest {
 
     @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
     @Test
-    void deleteById_shouldDelete_whenInputIsId() {
-        courseDao.deleteById(1112);
+    void delete_shouldDelete_whenInputIsId() {
+        Course course = new Course();
+        course.setCourseId(1112);
+        courseDao.delete(course);
 
         Course actual = entityManager.find(Course.class, 1112);
 

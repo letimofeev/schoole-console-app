@@ -1,5 +1,6 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -132,7 +133,10 @@ class StudentDaoJpaTest {
     @Sql("classpath:students_data.sql")
     @Test
     void deleteById_shouldDelete_whenStudentExists() {
-        studentDao.deleteById(1);
+        Student student = new Student();
+        student.setStudentId(1);
+
+        studentDao.delete(student);
 
         Student actual = entityManager.find(Student.class, 1);
 
@@ -140,8 +144,13 @@ class StudentDaoJpaTest {
     }
 
     @Test
-    void addStudentCourse_shouldAddStudentToCourse_whenInputIsIds() {
-        studentDao.addStudentCourse(4, 3);
+    void addStudentCourse_shouldAddStudentToCourse_whenInputIsStudentAndCourse() {
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(4);
+        course.setCourseId(3);
+
+        studentDao.addStudentCourse(student, course);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 4 AND course_id = 3";
         List students = entityManager.createNativeQuery(query).getResultList();
@@ -151,8 +160,13 @@ class StudentDaoJpaTest {
 
     @Sql("classpath:students_courses_data.sql")
     @Test
-    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsIds() {
-        studentDao.deleteStudentCourse(1, 2);
+    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsStudentAndCourse() {
+        Student student = new Student();
+        Course course = new Course();
+        student.setStudentId(1);
+        course.setCourseId(2);
+
+        studentDao.deleteStudentCourse(student, course);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 1 AND course_id = 2";
         List students = entityManager.createNativeQuery(query).getResultList();

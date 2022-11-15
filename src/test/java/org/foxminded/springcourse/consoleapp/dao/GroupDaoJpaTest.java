@@ -117,7 +117,10 @@ class GroupDaoJpaTest {
     @Sql(statements = "INSERT INTO groups VALUES (11133, 'Ferrari')")
     @Test
     void deleteById_shouldDelete_whenInputIsId() {
-        groupDao.deleteById(11133);
+        Group group = new Group();
+        group.setGroupId(11133);
+
+        groupDao.delete(group);
 
         Group actual = entityManager.find(Group.class, 11133);
 

@@ -1,5 +1,6 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
+import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,6 @@ public class StudentDaoJpa implements StudentDao {
             "JOIN students_courses sc on s.student_id = sc.student_id\n" +
             "JOIN courses c on c.course_id = sc.course_id\n" +
             "WHERE c.course_name = :courseName";
-    public static final String DELETE_BY_ID = "DELETE FROM Student WHERE studentId = :studentId";
     public static final String ADD_STUDENT_COURSE = "INSERT INTO students_courses (student_id, course_id) VALUES (:studentId, :courseId)";
     public static final String DELETE_STUDENT_COURSE = "DELETE FROM students_courses WHERE student_id = :studentId AND course_id = :courseId";
 
@@ -74,32 +74,35 @@ public class StudentDaoJpa implements StudentDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Query query = entityManager.createQuery(DELETE_BY_ID);
-        query.setParameter("studentId", id);
-
-        log.debug("Student with id = {} deleted from table 'students'", id);
+    public void delete(Student student) {
+        student = entityManager.find(Student.class, student.getStudentId());
+        if (student != null) {
+            entityManager.remove(student);
+            log.debug("Student with id = {} deleted from table 'students'", student.getStudentId());
+        }
     }
 
     @Override
-    public void addStudentCourse(int studentId, int courseId) {
+    public void addStudentCourse(Student student, Course course) {
         Query query = entityManager.createNativeQuery(ADD_STUDENT_COURSE);
-        query.setParameter("studentId", studentId);
-        query.setParameter("courseId", courseId);
+        query.setParameter("studentId", student.getStudentId());
+        query.setParameter("courseId", course.getCourseId());
         query.executeUpdate();
 
         log.debug("Student with id = {} added to the course with id = {} in table 'students_courses'",
-                studentId, courseId);
+                student.getStudentId(), course.getCourseId());
     }
 
     @Override
-    public void deleteStudentCourse(int studentId, int courseId) {
+    public void deleteStudentCourse(Student student, Course course) {
+
+
         Query query = entityManager.createNativeQuery(DELETE_STUDENT_COURSE);
-        query.setParameter("studentId", studentId);
-        query.setParameter("courseId", courseId);
+        query.setParameter("studentId", student.getStudentId());
+        query.setParameter("courseId", course.getCourseId());
         query.executeUpdate();
 
         log.debug("Student with id = {} deleted from the course with id = {} in table 'students_courses'",
-                studentId, courseId);
+                student.getStudentId(), course.getCourseId());
     }
 }
