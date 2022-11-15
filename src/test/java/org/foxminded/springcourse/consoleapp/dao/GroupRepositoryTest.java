@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class GroupDaoJpaTest {
+class GroupRepositoryTest {
 
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -61,7 +61,7 @@ class GroupDaoJpaTest {
     @Test
     void save_shouldInjectId_whenStudentSaved() {
         Group group = new Group("Grup");
-        groupDao.save(group);
+        groupRepository.save(group);
 
         int unexpectedId = 0;
         int actualId = group.getGroupId();
@@ -73,7 +73,7 @@ class GroupDaoJpaTest {
     @Test
     void findAll_shouldReturnExpectedRowsNumber_whenGroupsExist() {
         int expectedSize = 5;
-        int actualSize = groupDao.findAll().size();
+        int actualSize = groupRepository.findAll().size();
 
         assertEquals(expectedSize, actualSize);
     }
@@ -82,40 +82,25 @@ class GroupDaoJpaTest {
     @Test
     void findAllWithStudentCountLessThanEqual_shouldReturnExpectedRowsNumber_whenGroupsExist() {
         int expectedSize = 2;
-        int actualSize = groupDao.findAllWithStudentCountLessThanEqual(3).size();
+        int actualSize = groupRepository.findAllWithStudentCountLessThanEqual(3).size();
 
         assertEquals(expectedSize, actualSize);
     }
 
     @Sql(statements = "INSERT INTO groups VALUES (1001, 'Bugatti')")
     @Test
-    void find_shouldReturnPresentOptional_whenCourseExists() {
+    void findById_shouldReturnPresentOptional_whenCourseExists() {
         Group expected = new Group(1001, "Bugatti");
-        Group actual = groupDao.find(expected).get();
+        Group actual = groupRepository.findById(1001).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
-        Group group = new Group();
-        group.setGroupId(1000);
-
-        Optional<Group> actual = groupDao.find(group);
+    void findById_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Optional<Group> actual = groupRepository.findById(1000);
 
         assertTrue(actual.isEmpty());
-    }
-
-    @Sql(statements = "INSERT INTO groups VALUES (1002, 'Ducati')")
-    @Test
-    void update_shouldUpdate_whenInputIsGroup() {
-        Group expected = new Group(1002, "Bugatti");
-
-        groupDao.update(expected);
-
-        Group actual = entityManager.find(Group.class, 1002);
-
-        assertEquals(expected, actual);
     }
 
     @Sql(statements = "INSERT INTO groups VALUES (11133, 'Ferrari')")
@@ -124,7 +109,7 @@ class GroupDaoJpaTest {
         Group group = new Group();
         group.setGroupId(11133);
 
-        groupDao.delete(group);
+        groupRepository.delete(group);
 
         Group actual = entityManager.find(Group.class, 11133);
 

@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.service;
 
-import org.foxminded.springcourse.consoleapp.dao.GroupDao;
+import org.foxminded.springcourse.consoleapp.dao.GroupRepository;
 import org.foxminded.springcourse.consoleapp.model.Group;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class GroupServiceImplTest {
 
     @Mock
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @InjectMocks
     private GroupServiceImpl groupService;
@@ -31,8 +31,8 @@ class GroupServiceImplTest {
         List<Group> groups = List.of(new Group("group1"), new Group("group2"), new Group("group111"));
         List<Group> allGroups = List.of(new Group("all-"));
 
-        when(groupDao.findAllWithStudentCountLessThanEqual(1)).thenReturn(groups);
-        when(groupDao.findAll()).thenReturn(allGroups);
+        when(groupRepository.findAllWithStudentCountLessThanEqual(1)).thenReturn(groups);
+        when(groupRepository.findAll()).thenReturn(allGroups);
     }
 
     @Test
