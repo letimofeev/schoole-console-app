@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.service;
 
-import org.foxminded.springcourse.consoleapp.dao.CourseDao;
+import org.foxminded.springcourse.consoleapp.dao.CourseRepository;
 import org.foxminded.springcourse.consoleapp.model.Course;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class CourseServiceImplTest {
 
     @Mock
-    private CourseDao courseDao;
+    private CourseRepository courseRepository;
 
     @InjectMocks
     private CourseServiceImpl courseService;
@@ -30,7 +30,7 @@ class CourseServiceImplTest {
 
         List<Course> courses = List.of(new Course(10, "Name", "Desc"));
 
-        when(courseDao.findAll()).thenReturn(courses);
+        when(courseRepository.findAll()).thenReturn(courses);
     }
 
     @Test

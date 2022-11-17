@@ -1,6 +1,5 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
-import org.foxminded.springcourse.consoleapp.model.Course;
 import org.foxminded.springcourse.consoleapp.model.Student;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class StudentDaoJpaTest {
+class StudentRepositoryTest {
 
     @Autowired
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -63,7 +62,7 @@ class StudentDaoJpaTest {
     @Test
     void save_shouldInjectId_whenStudentSaved() {
         Student student = new Student(1, "FirstName", "LastName");
-        studentDao.save(student);
+        studentRepository.save(student);
 
         int unexpectedId = 0;
         int actualId = student.getStudentId();
@@ -73,7 +72,7 @@ class StudentDaoJpaTest {
 
     @Test
     void findAllByCourseName_shouldReturnEmpty_whenStudentsDoNotExist() {
-        List<Student> actual = studentDao.findAllByCourseName("course");
+        List<Student> actual = studentRepository.findAllByCourseName("course");
 
         assertTrue(actual.isEmpty());
     }
@@ -82,14 +81,14 @@ class StudentDaoJpaTest {
     @Test
     void findAllByCourseName_shouldReturnActualRowsNumber_whenStudentsExist() {
         int expectedSize = 3;
-        int actualSize = studentDao.findAllByCourseName("course3").size();
+        int actualSize = studentRepository.findAllByCourseName("course3").size();
 
         assertEquals(expectedSize, actualSize);
     }
 
     @Test
     void findAll_shouldReturnEmpty_whenStudentsDoNotExist() {
-        List<Student> actual = studentDao.findAll();
+        List<Student> actual = studentRepository.findAll();
 
         assertTrue(actual.isEmpty());
     }
@@ -98,40 +97,25 @@ class StudentDaoJpaTest {
     @Test
     void findAll_shouldReturnActualRowsNumber_whenStudentsExist() {
         int expectedSize = 10;
-        int actualSize = studentDao.findAll().size();
+        int actualSize = studentRepository.findAll().size();
 
         assertEquals(expectedSize, actualSize);
     }
 
     @Sql(statements = "INSERT INTO students VALUES (12, 10, 'Enzo', 'Ferrari')")
     @Test
-    void find_shouldReturnPresentOptional_whenStudentExists() {
+    void findById_shouldReturnPresentOptional_whenStudentExists() {
         Student expected = new Student(12, 10, "Enzo", "Ferrari");
-        Student actual = studentDao.find(expected).get();
+        Student actual = studentRepository.findById(12).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void find_shouldReturnEmptyOptional_whenStudentNotExists() {
-        Student student = new Student();
-        student.setStudentId(1000);
-
-        Optional<Student> actual = studentDao.find(student);
+    void findById_shouldReturnEmptyOptional_whenStudentNotExists() {
+        Optional<Student> actual = studentRepository.findById(1000);
 
         assertTrue(actual.isEmpty());
-    }
-
-    @Sql(statements = "INSERT INTO students VALUES (111, 11, 'Jonathan', 'Davis')")
-    @Test
-    void update_shouldUpdate_whenInputIsStudent() {
-        Student expected = new Student(111, 111, "Corey", "Taylor");
-
-        studentDao.update(expected);
-
-        Student actual = entityManager.find(Student.class, 111);
-
-        assertEquals(expected, actual);
     }
 
     @Sql("classpath:students_data.sql")
@@ -140,7 +124,7 @@ class StudentDaoJpaTest {
         Student student = new Student();
         student.setStudentId(1);
 
-        studentDao.delete(student);
+        studentRepository.delete(student);
 
         Student actual = entityManager.find(Student.class, 1);
 
@@ -148,32 +132,22 @@ class StudentDaoJpaTest {
     }
 
     @Test
-    void addStudentCourse_shouldAddStudentToCourse_whenInputIsStudentAndCourse() {
-        Student student = new Student();
-        Course course = new Course();
-        student.setStudentId(4);
-        course.setCourseId(3);
-
-        studentDao.addStudentCourse(student, course);
+    void addStudentCourse_shouldAddStudentToCourse_whenInputIsStudentAndCourseIds() {
+        studentRepository.addStudentCourse(4, 3);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 4 AND course_id = 3";
-        List students = entityManager.createNativeQuery(query).getResultList();
+        List<?> students = entityManager.createNativeQuery(query).getResultList();
 
         assertFalse(students.isEmpty());
     }
 
     @Sql("classpath:students_courses_data.sql")
     @Test
-    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsStudentAndCourse() {
-        Student student = new Student();
-        Course course = new Course();
-        student.setStudentId(1);
-        course.setCourseId(2);
-
-        studentDao.deleteStudentCourse(student, course);
+    void deleteStudentCourse_shouldDeleteStudentFromCourse_whenInputIsStudentAndCourseIds() {
+        studentRepository.deleteStudentCourse(1, 2);
 
         String query = "SELECT * FROM students_courses WHERE student_id = 1 AND course_id = 2";
-        List students = entityManager.createNativeQuery(query).getResultList();
+        List<?> students = entityManager.createNativeQuery(query).getResultList();
 
         assertTrue(students.isEmpty());
     }

@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.service;
 
-import org.foxminded.springcourse.consoleapp.dao.CourseDao;
+import org.foxminded.springcourse.consoleapp.dao.CourseRepository;
 import org.foxminded.springcourse.consoleapp.model.Course;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +11,14 @@ import java.util.List;
 @Transactional
 public class CourseServiceImpl implements CourseService {
 
-    private final CourseDao courseDao;
+    private final CourseRepository courseRepository;
 
-    public CourseServiceImpl(CourseDao courseDao) {
-        this.courseDao = courseDao;
+    public CourseServiceImpl(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
     }
 
     @Override
     public List<Course> findAll() {
-        return courseDao.findAll();
+        return courseRepository.findAll();
     }
 }

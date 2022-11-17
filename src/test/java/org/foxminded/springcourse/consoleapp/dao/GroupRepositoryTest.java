@@ -1,6 +1,6 @@
 package org.foxminded.springcourse.consoleapp.dao;
 
-import org.foxminded.springcourse.consoleapp.model.Course;
+import org.foxminded.springcourse.consoleapp.model.Group;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-class CourseDaoJpaTest {
+class GroupRepositoryTest {
 
     @Autowired
-    private CourseDao courseDao;
+    private GroupRepository groupRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -38,7 +38,7 @@ class CourseDaoJpaTest {
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
             .withDatabaseName("school-test")
-            .withInitScript("courses_test_tables.sql");
+            .withInitScript("groups_test_tables.sql");
 
     @BeforeAll
     static void setUp() {
@@ -60,63 +60,58 @@ class CourseDaoJpaTest {
 
     @Test
     void save_shouldInjectId_whenStudentSaved() {
-        Course course = new Course("Name", "D");
-        courseDao.save(course);
+        Group group = new Group("Grup");
+        groupRepository.save(group);
 
         int unexpectedId = 0;
-        int actualId = course.getCourseId();
+        int actualId = group.getGroupId();
 
         assertNotEquals(unexpectedId, actualId);
     }
 
-    @Sql("classpath:courses_data.sql")
+    @Sql("classpath:groups_students_data.sql")
     @Test
-    void findAll_shouldReturnExpectedRowsNumber_whenCoursesExist() {
-        int expectedSize = 8;
-        int actualSize = courseDao.findAll().size();
+    void findAll_shouldReturnExpectedRowsNumber_whenGroupsExist() {
+        int expectedSize = 5;
+        int actualSize = groupRepository.findAll().size();
 
         assertEquals(expectedSize, actualSize);
     }
 
-    @Sql(statements = "INSERT INTO courses VALUES (1000, 'Doggy', 'Ok')")
+    @Sql("classpath:groups_students_data.sql")
     @Test
-    void find_shouldReturnPresentOptional_whenCourseExists() {
-        Course expected = new Course(1000, "Doggy", "Ok");
-        Course actual = courseDao.find(expected).get();
+    void findAllWithStudentCountLessThanEqual_shouldReturnExpectedRowsNumber_whenGroupsExist() {
+        int expectedSize = 2;
+        int actualSize = groupRepository.findAllWithStudentCountLessThanEqual(3).size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Sql(statements = "INSERT INTO groups VALUES (1001, 'Bugatti')")
+    @Test
+    void findById_shouldReturnPresentOptional_whenCourseExists() {
+        Group expected = new Group(1001, "Bugatti");
+        Group actual = groupRepository.findById(1001).get();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void find_shouldReturnEmptyOptional_whenCourseNotExists() {
-        Course course = new Course();
-        course.setCourseId(100);
-
-        Optional<Course> actual = courseDao.find(course);
+    void findById_shouldReturnEmptyOptional_whenCourseNotExists() {
+        Optional<Group> actual = groupRepository.findById(1000);
 
         assertTrue(actual.isEmpty());
     }
 
-    @Sql(statements = "INSERT INTO courses VALUES (1111, 'Kitten', 'Ko')")
+    @Sql(statements = "INSERT INTO groups VALUES (11133, 'Ferrari')")
     @Test
-    void update_shouldUpdate_whenInputIsCourse() {
-        Course expected = new Course(1111, "Doggy", "Ok");
+    void delete_shouldDelete_whenInputIsGroup() {
+        Group group = new Group();
+        group.setGroupId(11133);
 
-        courseDao.update(expected);
+        groupRepository.delete(group);
 
-        Course actual = entityManager.find(Course.class, 1111);
-
-        assertEquals(expected, actual);
-    }
-
-    @Sql(statements = "INSERT INTO courses VALUES (1112, 'L', 'G')")
-    @Test
-    void delete_shouldDelete_whenInputIsCourse() {
-        Course course = new Course();
-        course.setCourseId(1112);
-        courseDao.delete(course);
-
-        Course actual = entityManager.find(Course.class, 1112);
+        Group actual = entityManager.find(Group.class, 11133);
 
         assertNull(actual);
     }
